@@ -1,6 +1,12 @@
 # _*_ encoding: utf-8 _*_
 import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
+os.environ['IDENTITY_SERVER_URL'] = 'https://id.leanda.io/auth/realms/OSDR'
+os.environ['WEB_API_URL'] = 'http://api.leanda.io/core-api/v1/api'
+
+# os.environ['IDENTITY_SERVER_URL'] = 'http://localhost:18080/auth/realms/OSDR'
+# os.environ['WEB_API_URL'] = 'http://localhost:28611/api'
 DEBUG = True
 
 WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
@@ -17,7 +23,7 @@ NODE = '%s/nodes/{}' % WEB_API_URL
 CONTENTS = '%s/nodes/{}/nodes' % WEB_API_URL
 BROWSE_CONTENTS = '%s/nodes/{cwd}/nodes?PageNumber={page}&PageSize={size}' % WEB_API_URL
 
-DOWNLOAD = '%s/blobs/{bucket}/{id}' % WEB_API_URL
+DOWNLOAD = '%s/entities/files/{file_id}/blobs/{id}' % WEB_API_URL
 UPLOAD = '%s/blobs/{id}' % WEB_API_URL
 REMOVE = '%s/nodecollections' % WEB_API_URL
 

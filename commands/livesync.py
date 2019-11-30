@@ -119,7 +119,7 @@ class LiveSync(HandlerBase):
         print('\n\nDownloading...')
         for file in rfiles - lfiles:
             rec = {'type': 'File', 'name': file.name, 'length': file.length,
-                   'blob': {'id': file.bid, 'bucket': file.bucket,
+                   'blob': {'id': file.bid, 'bucket': file.bucket, 'file_id': file.id,
                             'length': file.length}}
             path = os.path.join(self.folder, file.name)
             try:

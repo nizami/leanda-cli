@@ -20,7 +20,7 @@ from clint.textui import progress
 class EndPoint(object):
     API_AUTH = {
         'grant_type': 'password',
-        'client_id': 'osdr_cli'
+        'client_id': 'leanda_cli'
     }
 
     headers = {

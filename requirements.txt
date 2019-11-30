@@ -1,4 +1,4 @@
-PyYAML
+PyYAML==3.12
 certifi
 chardet==3.0.4
 clint==0.5.1

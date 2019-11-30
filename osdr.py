@@ -21,6 +21,7 @@ from commands.models import ListModels
 from commands.recordsets import ListRecordsets
 from commands.predict import Predict
 from commands.download import Download
+from commands.categories import Categories
 from clint.textui import colored
 from config import DEBUG
 
@@ -42,7 +43,7 @@ def init_subparsers(parser):
                 PWD, LS, CD, RM,
                 Download, Upload, LiveSync,
                 Train, ListItems, Predict,
-                ListModels, ListRecordsets,
+                ListModels, ListRecordsets, Categories
                 # Convert, 
                 ]
 
