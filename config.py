@@ -10,6 +10,7 @@ os.environ['WEB_API_URL'] = 'http://api.leanda.io/core-api/v1/api'
 DEBUG = True
 
 WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
+WEB_STORAGE_API_URL = 'http://api.leanda.io/blob/v1/api'
 IDENTITY_SERVER_URL = 'https://id-dev.your-company.com/auth/realms/OSDR'
 if 'WEB_API_URL' in os.environ.keys():
     WEB_API_URL = os.environ['WEB_API_URL']
@@ -24,7 +25,7 @@ CONTENTS = '%s/nodes/{}/nodes' % WEB_API_URL
 BROWSE_CONTENTS = '%s/nodes/{cwd}/nodes?PageNumber={page}&PageSize={size}' % WEB_API_URL
 
 DOWNLOAD = '%s/entities/files/{file_id}/blobs/{id}' % WEB_API_URL
-UPLOAD = '%s/blobs/{id}' % WEB_API_URL
+UPLOAD = '%s/blobs/{id}' % WEB_STORAGE_API_URL
 REMOVE = '%s/nodecollections' % WEB_API_URL
 
 TRAIN = '%s/machinelearning/models' % WEB_API_URL
