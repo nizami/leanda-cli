@@ -46,6 +46,7 @@ python -m pip install -r requirements.txt
 |`osdr.py` [`recordsets`](#recordsets)| Allows to list recordsets from OSDR using queries. |
 |`osdr.py` [`train`](#train)| Allows to run Machine Learning command train. |
 |`osdr.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
+|`osdr.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
 
 
 ## login
@@ -382,6 +383,12 @@ osdr.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000
 
 ```
 
+## categories
+Allows to initialize category tree with basic structure.
 
+Examples:
 
+```terminal
+osdr.py categories
 
+```
