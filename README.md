@@ -8,7 +8,8 @@ You will need Python 2.7 to get started, so be sure to have an up-to-date Python
 Osdr-cli and its dependencies support Python 3. You could start using Python 3, but there are a few things to be aware of.
 You need to use Python 3.6 or higher. Older versions are not supported.  You’ll probably want to use [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
 You should define environment variables (or default values will be used):
-```
+
+```bash
 WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
 IDENTITY_SERVER_URL = 'https://id.your-company.com/auth/realms/OSDR'
 ```
@@ -26,13 +27,12 @@ If you don't have pip installed try
 python -m pip install -r requirements.txt
 ```
 
-
 ## Commands Summary
 
 |Command| Usage|
 | ----- | ---------- |
-|`osdr.py` [`login`](#login)| Allows to login and store the update sesion information for an OSDR user.|
-|`osdr.py` [`whoami`](#whoami)| Check athorization and explore session data.|
+|`osdr.py` [`login`](#login)| Allows to login and store the update session information for an OSDR user.|
+|`osdr.py` [`whoami`](#whoami)| Check authorization and explore session data.|
 |`osdr.py` [`logout`](#logout)| Do logout. Session data is removed.|
 |`osdr.py` [`pwd`](#pwd)| Identify current OSDR working directory.|
 |`osdr.py` [`cd`](#cd)| Change OSDR's current working directory.|
@@ -48,10 +48,9 @@ python -m pip install -r requirements.txt
 |`osdr.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
 |`osdr.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
 
-
 ## login
 
-Allows to login and reset sesion information for an OSDR user.
+Allows to login and reset session information for an OSDR user.
 
 ### Parameters for `login`
 
@@ -74,7 +73,7 @@ Password:
 
 ## whoami
 
-Check athorization and explore session data.
+Check authorization and explore session data.
 
 ### Parameters for `whoami`
 
@@ -275,6 +274,7 @@ osdr.py livesync -ur
 ```
 
 ## items
+
 Allows to list all items from OSDR using queries.
 
 ```terminal
@@ -303,9 +303,8 @@ osdr.py items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s 
 osdr.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 ```
 
-
-
 ## models
+
 Allows to list models from OSDR using queries. Same as `items`, but add preset filter `SubType eq 'Model'`
 
 Examples:
@@ -321,9 +320,8 @@ osdr.py models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f ya
 
 ```
 
-
-
 ## recordsets
+
 Allows to list recordsets from OSDR using queries. Same as `items`, but add preset filter `SubType eq 'Records'`
 
 Examples:
@@ -339,9 +337,8 @@ osdr.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -
 
 ```
 
-
-
 ## train
+
 Allows to run Machine Learning command train.
 
 ```terminal
@@ -365,9 +362,8 @@ osdr.py train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model
 osdr.py train data_solu -f test5.model -m sample_files/train_sdf_model.yaml 
 ```
 
-
-
 ## predict
+
 Allows to run Machine Learning command predict.
 
 ```terminal
@@ -384,6 +380,7 @@ osdr.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000
 ```
 
 ## categories
+
 Allows to initialize category tree with basic structure.
 
 Examples:
