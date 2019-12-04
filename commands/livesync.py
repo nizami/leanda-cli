@@ -80,11 +80,16 @@ class LiveSync(HandlerBase):
         lfiles = ListHelper(path=self.folder,
                             update=self.update_remote)
 
-        for file in os.listdir(self.folder):
+
+        # print('LIST', self.list_files(self.folder))
+        # for file in os.listdir(self.folder):
+        for file in self.list_files(self.folder):
+            # print('file', file)
             path = os.path.join(self.folder, file)
-            rec = LocalFiles(name=os.path.basename(path),
+            rec = LocalFiles(name=file,
                              mtime=os.path.getmtime(path))
             if self._is_local_file(path):
+                print(rec)
                 lfiles.list.append(rec)
 
         # remote folder id
@@ -105,6 +110,7 @@ class LiveSync(HandlerBase):
 
         # remote files
         records = ep.get_containers(list_url)
+        print('RECORDS', records)
         records = list(records)
 
         rfiles = ListHelper(self.folder, update=self.update_local)
@@ -131,6 +137,7 @@ class LiveSync(HandlerBase):
         # file to upload
         print('Uploading...')
         for file in lfiles - rfiles:
+            print('---', self.folder)
             path = os.path.join(self.folder, file.name)
             try:
                 print('Uploading %s' % path)
@@ -139,3 +146,12 @@ class LiveSync(HandlerBase):
             except Exception as e:
                 print(e)
         lfiles.store_log()
+
+    def list_files(self, startpath):
+        for root, dirs, files in os.walk(startpath):
+            # level = root.replace(startpath, '').count(os.sep)
+            # indent = ' ' * 4 * (level)
+            # print('{}/'.format())
+            # subindent = ' ' * 4 * (level + 1)
+            for f in files:
+                yield '{}\{}'.format(root.replace(startpath + '\\', ''), f)

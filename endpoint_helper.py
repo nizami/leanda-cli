@@ -10,7 +10,7 @@ from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 from requests_toolbelt import MultipartEncoder
 from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
-                    UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE)
+                    UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
 
 
@@ -97,6 +97,10 @@ class EndPoint(object):
 
     def get(self, url, **params):
         resp = self.oauth.get(url, headers=self.headers)
+        return resp
+
+    def delete(self, url, **params):
+        resp = self.oauth.delete(url, headers=self.headers)
         return resp
 
     def post(self, url, data, files=None):
@@ -221,3 +225,8 @@ class EndPoint(object):
         path = '/'.join(path)
         id_path = '/'.join(id_path)
         return path, id_path
+
+    def create_folder(self, name, parent_id):
+        url = '{}/entities/folders'.format(WEB_API_URL)
+        data = { 'Name': name, 'parentId': parent_id }
+        resp = self.oauth.post(url, data, headers=self.headers)

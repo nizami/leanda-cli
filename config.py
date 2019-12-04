@@ -2,16 +2,17 @@
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-os.environ['IDENTITY_SERVER_URL'] = 'https://id.leanda.io/auth/realms/OSDR'
-os.environ['WEB_API_URL'] = 'http://api.leanda.io/core-api/v1/api'
+# # os.environ['WEB_API_URL'] = 'http://api.leanda.io/core-api/v1/api'
+# os.environ['WEB_API_URL'] = 'http://localhost/core-api/v1/api'
 
-# os.environ['IDENTITY_SERVER_URL'] = 'http://localhost:18080/auth/realms/OSDR'
-# os.environ['WEB_API_URL'] = 'http://localhost:28611/api'
+# os.environ['IDENTITY_SERVER_URL'] = 'http://localhost:8080/auth/realms/OSDR'
+os.environ['WEB_API_URL'] = 'http://localhost/core-api/v1/api'
+os.environ['IDENTITY_SERVER_URL'] = 'https://id.leanda.io/auth/realms/OSDR'
 DEBUG = True
 
-WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
-WEB_STORAGE_API_URL = 'http://api.leanda.io/blob/v1/api'
-IDENTITY_SERVER_URL = 'https://id-dev.your-company.com/auth/realms/OSDR'
+WEB_API_URL = 'http://localhost/core-api/v1/api'
+WEB_STORAGE_API_URL = 'http://localhost/blob/v1/api'
+IDENTITY_SERVER_URL = 'https://id.leanda.io/auth/realms/OSDR'
 if 'WEB_API_URL' in os.environ.keys():
     WEB_API_URL = os.environ['WEB_API_URL']
 if 'IDENTITY_SERVER_URL' in os.environ.keys():

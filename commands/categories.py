@@ -7,6 +7,7 @@ import os
 import json
 from config import (WEB_API_URL)
 
+
 class Categories(HandlerBase):
     """
     Allows download a  file from OSDR BLOB store.
@@ -19,21 +20,34 @@ class Categories(HandlerBase):
             params:
                 -
                     names:
-                        - -f
-                        - --folder-name
-                    dest: folder
-                    required: False
-                    help: Output folder name
+                        - -rm
+                        - --remove
+                    action: store_true
+                    help: Remove all categories
+                -
+                    names:
+                        - -i
+                        - --init
+                    action: store_true
+                    help: Initialize categories from categories.json file data
     '''
 
     def __call__(self):
-        # super().__call__()
         ep = EndPoint()
         session = ep.connect()
-        with open('categories.json') as categories_json:
-            categories_data = json.load(categories_json)
-            print(categories_data)
-            url = '{}/CategoryTrees/tree'.format(WEB_API_URL)
-            print(url)
-            resp = ep.post(url, categories_data)
-            print(resp)
+        url = '{}/CategoryTrees/tree'.format(WEB_API_URL)
+        get_resp = ep.get(url)
+        if self.init:
+            if not len(get_resp.json()):
+                with open('categories.json') as categories_json:
+                    categories_data = json.load(categories_json)
+                    resp = ep.post(url, categories_data)
+                    print(resp)
+            else:
+                print('Can\'t create a tree. It is already exists')
+        elif self.remove:
+            for node in get_resp.json():
+                resp = ep.delete(url+'/{id}?version={version}'.format(**node))
+                print(resp)
+        else:
+            print(json.dumps(get_resp.json(), indent=4))

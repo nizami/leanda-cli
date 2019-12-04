@@ -66,4 +66,3 @@ class ListHelper(object):
         print(self.updated)
         with open(self.filename, 'wb') as fh:
             pickle.dump(self.updated, fh)
-
