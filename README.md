@@ -15,10 +15,10 @@ IDENTITY_SERVER_URL = 'https://id.your-company.com/auth/realms/OSDR'
 ```
 
 ```terminal
-git clone https://github.com/<this-repository>/osdr-cli.git
-cd osdr-cli
+git clone https://github.com/<this-repository>/leanda-cli.git
+cd leanda-cli
 pip install -r requirements.txt
-python osdr.py --help
+python leanda.py --help
 ```
 
 If you don't have pip installed try
@@ -31,22 +31,22 @@ python -m pip install -r requirements.txt
 
 |Command| Usage|
 | ----- | ---------- |
-|`osdr.py` [`login`](#login)| Allows to login and store the update session information for an OSDR user.|
-|`osdr.py` [`whoami`](#whoami)| Check authorization and explore session data.|
-|`osdr.py` [`logout`](#logout)| Do logout. Session data is removed.|
-|`osdr.py` [`pwd`](#pwd)| Identify current OSDR working directory.|
-|`osdr.py` [`cd`](#cd)| Change OSDR's current working directory.|
-|`osdr.py` [`ls`](#ls)| Browse remote OSDR folder. |
-|`osdr.py` [`rm`](#rm)| Allows to remove file or folder. |
-|`osdr.py` [`upload`](#upload)| Allows uploading a local file into the BLOB (raw file) store.|
-|`osdr.py` [`download`](#download)| Allows to download an OSDR file.|
-|`osdr.py` [`livesync`](#livesync)| Two-way synchronization of local folder with the OSDR user's folder. |
-|`osdr.py` [`items`](#items)| Allows to list all items from OSDR using queries. |
-|`osdr.py` [`models`](#models)| Allows to list models from OSDR using queries. |
-|`osdr.py` [`recordsets`](#recordsets)| Allows to list recordsets from OSDR using queries. |
-|`osdr.py` [`train`](#train)| Allows to run Machine Learning command train. |
-|`osdr.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
-|`osdr.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
+|`leanda.py` [`login`](#login)| Allows to login and store the update session information for an OSDR user.|
+|`leanda.py` [`whoami`](#whoami)| Check authorization and explore session data.|
+|`leanda.py` [`logout`](#logout)| Do logout. Session data is removed.|
+|`leanda.py` [`pwd`](#pwd)| Identify current OSDR working directory.|
+|`leanda.py` [`cd`](#cd)| Change OSDR's current working directory.|
+|`leanda.py` [`ls`](#ls)| Browse remote OSDR folder. |
+|`leanda.py` [`rm`](#rm)| Allows to remove file or folder. |
+|`leanda.py` [`upload`](#upload)| Allows uploading a local file into the BLOB (raw file) store.|
+|`leanda.py` [`download`](#download)| Allows to download an OSDR file.|
+|`leanda.py` [`livesync`](#livesync)| Two-way synchronization of local folder with the OSDR user's folder. |
+|`leanda.py` [`items`](#items)| Allows to list all items from OSDR using queries. |
+|`leanda.py` [`models`](#models)| Allows to list models from OSDR using queries. |
+|`leanda.py` [`recordsets`](#recordsets)| Allows to list recordsets from OSDR using queries. |
+|`leanda.py` [`train`](#train)| Allows to run Machine Learning command train. |
+|`leanda.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
+|`leanda.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
 
 ## login
 
@@ -63,11 +63,11 @@ Allows to login and reset session information for an OSDR user.
 Examples:
 
 ```terminal
-$ osdr.py login -u<user-name> -p<password>
-$ osdr.py login --verbosity -u<user-name> -p<password>
-$ osdr.py login -v -u<user-name> -p<password>
-$ osdr.py login -vv -u<user-name> -p<password>
-$ osdr.py login -u<user-name> -p
+$ leanda.py login -u<user-name> -p<password>
+$ leanda.py login --verbosity -u<user-name> -p<password>
+$ leanda.py login -v -u<user-name> -p<password>
+$ leanda.py login -vv -u<user-name> -p<password>
+$ leanda.py login -u<user-name> -p
 Password:
 ```
 
@@ -84,9 +84,9 @@ Check authorization and explore session data.
 Examples:
 
 ```terminal
-osdr.py whoami --verbosity
-osdr.py whoami -vv
-osdr.py whoami -vvv
+leanda.py whoami --verbosity
+leanda.py whoami -vv
+leanda.py whoami -vvv
 ```
 
 ## logout
@@ -100,7 +100,7 @@ No parameters
 Examples:
 
 ```terminal
-osdr.py logout
+leanda.py logout
 ```
 
 ## pwd
@@ -116,10 +116,10 @@ Identify current OSDR working directory.
 Examples:
 
 ```terminal
-osdr.py pwd
-osdr.py pwd --verbosity
-osdr.py pwd -vv
-osdr.py pwd -vvv
+leanda.py pwd
+leanda.py pwd --verbosity
+leanda.py pwd -vv
+leanda.py pwd -vvv
 ```
 
 ## ls
@@ -141,10 +141,10 @@ container - Remote OSDR user's folder or none for current working folder.
 Examples:
 
 ```terminal
-osdr.py ls c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
-osdr.py ls 2e01
-osdr.py ls -p10
-osdr.py ls -s20 -2
+leanda.py ls c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda.py ls 2e01
+leanda.py ls -p10
+leanda.py ls -s20 -2
 ```
 
 ## cd
@@ -164,16 +164,16 @@ container - Remote OSDR user's folder, none for home  folder or '..' for
 Examples:
 
 ```terminal
-$ osdr.py ls
+$ leanda.py ls
 File
     33.mol               Records(  1) Processed  c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
     combined lysomotroph Records( 55) Processed  00160000-ac12-0242-c20e-08d56e29a481
 
-$ osdr.py cd 33
-$ osdr.py cd a481
-$ osdr.py cd
-$ osdr.py cd ..
-$ osdr.py cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+$ leanda.py cd 33
+$ leanda.py cd a481
+$ leanda.py cd
+$ leanda.py cd ..
+$ leanda.py cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## rm
@@ -192,9 +192,9 @@ container - Remote OSDR user's folder. OSDR user's folder can be choosed by
 Examples:
 
 ```terminal
-osdr.py rm a481
-osdr.py rm abc
-osdr.py rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda.py rm a481
+leanda.py rm abc
+leanda.py rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## upload
@@ -218,11 +218,11 @@ container - Remote OSDR user's folder, none for working folder.
 Examples:
 
 ```terminal
-osdr.py upload -p path-to-file
-osdr.py upload -p path-to-file1 -p path-to-file2 -p path-to-file3
-osdr.py upload -p path-to-file -n new-name to file 'filename'
-osdr.py upload -p path-to-file -m path-to-model.json
-osdr.py upload -p path-to-file -m path-to-model.yaml
+leanda.py upload -p path-to-file
+leanda.py upload -p path-to-file1 -p path-to-file2 -p path-to-file3
+leanda.py upload -p path-to-file -n new-name to file 'filename'
+leanda.py upload -p path-to-file -m path-to-model.json
+leanda.py upload -p path-to-file -m path-to-model.yaml
 ```
 
 ## download
@@ -244,9 +244,9 @@ container - Remote OSDR user's folder, none for working folder.
 Examples:
 
 ```terminal
-osdr.py upload abc -o path-to-file
-osdr.py upload a481 -f -o path-to-file1
-osdr.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
+leanda.py upload abc -o path-to-file
+leanda.py upload a481 -f -o path-to-file1
+leanda.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
 ```
 
 ## livesync
@@ -268,9 +268,9 @@ Two-way synchronization of local folder with the OSDR user's folder. Comparision
 Examples:
 
 ```terminal
-osdr.py livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
-osdr.py livesync -l /path/to/folder -f -r 2e01 -ul
-osdr.py livesync -ur
+leanda.py livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda.py livesync -l /path/to/folder -f -r 2e01 -ul
+leanda.py livesync -ur
 ```
 
 ## items
@@ -294,13 +294,13 @@ Allows to list all items from OSDR using queries.
 Examples:
 
 ```terminal
-osdr.py items 
-osdr.py items -v
-osdr.py items -vv
-osdr.py items -n png
-osdr.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-osdr.py items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-osdr.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda.py items 
+leanda.py items -v
+leanda.py items -vv
+leanda.py items -n png
+leanda.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda.py items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 ```
 
 ## models
@@ -310,13 +310,13 @@ Allows to list models from OSDR using queries. Same as `items`, but add preset f
 Examples:
 
 ```terminal
-osdr.py models 
-osdr.py models -v
-osdr.py models -vv
-osdr.py items -n ada
-osdr.py models -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-osdr.py models -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-osdr.py models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda.py models 
+leanda.py models -v
+leanda.py models -vv
+leanda.py items -n ada
+leanda.py models -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda.py models -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda.py models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 
 ```
 
@@ -327,13 +327,13 @@ Allows to list recordsets from OSDR using queries. Same as `items`, but add pres
 Examples:
 
 ```terminal
-osdr.py recordsets 
-osdr.py recordsets -v
-osdr.py recordsets -vv
-osdr.py recordsets -n combined
-osdr.py recordsets -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-osdr.py recordsets -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-osdr.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda.py recordsets 
+leanda.py recordsets -v
+leanda.py recordsets -vv
+leanda.py recordsets -n combined
+leanda.py recordsets -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda.py recordsets -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 
 ```
 
@@ -355,11 +355,11 @@ Allows to run Machine Learning command train.
 Examples:
 
 ```terminal
-osdr.py train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml 
-osdr.py train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml 
-osdr.py train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml 
-osdr.py train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model.yaml 
-osdr.py train data_solu -f test5.model -m sample_files/train_sdf_model.yaml 
+leanda.py train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml 
+leanda.py train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml 
+leanda.py train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml 
+leanda.py train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model.yaml 
+leanda.py train data_solu -f test5.model -m sample_files/train_sdf_model.yaml 
 ```
 
 ## predict
@@ -375,7 +375,7 @@ Allows to run Machine Learning command predict.
 Examples:
 
 ```terminal
-osdr.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
+leanda.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
 
 ```
 
@@ -386,6 +386,6 @@ Allows to initialize category tree with basic structure.
 Examples:
 
 ```terminal
-osdr.py categories
+leanda.py categories
 
 ```

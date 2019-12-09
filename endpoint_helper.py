@@ -191,6 +191,18 @@ class EndPoint(object):
         resp = self.post(url, data, files=file)
         print(resp)
 
+    def upload_file(self, session, parent_id, file_path):
+        if not os.path.isfile(file_path):
+            raise IOError('File %s not found' % file_path)
+        fh = open(file_path, 'rb')
+        file_path = os.path.basename(file_path)
+        file = {'file': (file_path, fh, 'multipart/mixed')}
+
+        url = UPLOAD.format(id=session['owner'])
+        data = {'parentId': parent_id }
+        resp = self.post(url, data, files=file)
+        print('upload_file', resp)
+
     def remove(self, record):
         url = REMOVE
         data = REMOVE_DATA % record['id']
@@ -228,5 +240,7 @@ class EndPoint(object):
 
     def create_folder(self, name, parent_id):
         url = '{}/entities/folders'.format(WEB_API_URL)
-        data = { 'Name': name, 'parentId': parent_id }
-        resp = self.oauth.post(url, data, headers=self.headers)
+        data = { "Name": name, "parentId": parent_id }
+        self.headers.update({'Content-Type': 'application/json'})
+        resp = self.post(url=url, data=data)
+        return resp
