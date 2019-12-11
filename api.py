@@ -13,11 +13,7 @@ from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
                     UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
 
-
-# from clint.textui import puts, indent
-
-
-class EndPoint(object):
+class Api(object):
     API_AUTH = {
         'grant_type': 'password',
         'client_id': 'leanda_cli'
@@ -27,6 +23,8 @@ class EndPoint(object):
         'Accept': 'application/json',
         'Authorization': None
     }
+
+    session = None
 
     def __init__(self):
         from os.path import expanduser
@@ -43,6 +41,8 @@ class EndPoint(object):
         self.oauth = OAuth2Session(client=client)
         self.oauth.verify = False
         requests.packages.urllib3.disable_warnings()
+
+        self.session = self.connect();
 
     def persistent_storage(self, mode='r'):
         return open(self.storage, "%sb" % mode)

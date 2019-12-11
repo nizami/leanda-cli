@@ -1,17 +1,16 @@
 # _*_ encoding: utf-8 _*_
 
 from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
+from api import Api
 from filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from config import BROWSE_CONTENTS, CONTENTS, FILE
+from config import BROWSE_CONTENTS, CONTENTS, FILE, UPLOAD
 import os
 import json
 from clint.textui import colored
 from time import time, sleep
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, isdir, join
 import hashlib
-
 
 
 class LiveSync(HandlerBase):
@@ -67,6 +66,8 @@ class LiveSync(HandlerBase):
 
     '''
 
+    api: Api
+
     def _is_local_file(self, name):
         filename = os.path.basename(name)
         return os.path.isfile(name) \
@@ -80,18 +81,15 @@ class LiveSync(HandlerBase):
         assert os.path.isdir(self.folder), \
             "'{folder}' is not a folder".format(folder=self.folder)
 
-        ep = EndPoint()
-        session = ep.connect()
-        print('start')
-        # ep.create_folder('so', session['cwd'])
+        self.api = Api()
+        # self.api.create_folder('so', self.api.session['cwd'])
         # aaa = self.get_or_create_folder_by_name('a16f22fe-c36a-4d57-ad78-19746007c82d', 'as212322dw')
         # print(((aaa)))
-        # self.upload_local_folder(
-        #     session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
-        
-        r = self.md5("C:\w\projects\ArqiSoft\leanda\leanda-core\README.md")
-        print(r)
-        # list(self.get_all_items('2ffbd2b0-8cee-43ab-bb76-7179faf164e0'))
+
+        self.upload_local_files(
+            self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
+
+        # print(json.dumps(self.get_all_remote_items('b4dcb4f3-ce02-4566-b18e-32c1a23873ed'), indent=4))
         return
         # Local files
         lfiles = ListHelper(path=self.folder,
@@ -109,23 +107,23 @@ class LiveSync(HandlerBase):
                 lfiles.list.append(rec)
 
         # remote folder id
-        list_url = CONTENTS.format(session['cwd'])
+        list_url = CONTENTS.format(self.api.session['cwd'])
         if self.container == '.':
-            self.container = session['cwd']
+            self.container = self.api.session['cwd']
         else:
-            record = ep.get_container_by_id(self.container)
+            record = self.api.get_container_by_id(self.container)
             if not record:
-                records = ep.get_containers(list_url)
-                record = ep.get_uniq_container(records, self.container)
+                records = self.api.get_containers(list_url)
+                record = self.api.get_uniq_container(records, self.container)
 
             assert record['type'] in ('User', 'Folder'), \
                 "Container '{name}' is not a folder".format(**record)
-            self.container = session['cwd'] = record['id']
+            self.container = self.api.session['cwd'] = record['id']
 
         list_url = CONTENTS.format(self.container)
 
         # remote files
-        records = ep.get_containers(list_url)
+        records = self.api.get_containers(list_url)
         print('RECORDS', records)
         records = list(records)
 
@@ -145,7 +143,7 @@ class LiveSync(HandlerBase):
                             'length': file.length}}
             path = os.path.join(self.folder, file.name)
             try:
-                ep.download(rec, path=path)
+                self.api.download(rec, path=path)
                 lfiles.log(path=path, file=file)
             except Exception as e:
                 print(e)
@@ -153,81 +151,106 @@ class LiveSync(HandlerBase):
         # file to upload
         print('Uploading...')
         for file in lfiles - rfiles:
-            print('---', self.folder)
             path = os.path.join(self.folder, file.name)
             try:
                 print('Uploading %s' % path)
-                ep.upload(session, path)
+                self.api.upload(self.api.session, path)
                 lfiles.log(path=path, file=file)
             except Exception as e:
                 print(e)
         lfiles.store_log()
 
-    def upload_local_folder(self, parent_id, local_folder_path):
-        print(local_folder_path)
-        ep = EndPoint()
-        session = ep.connect()
+    def download_remote_files(self, parent_id, local_folder_path):
         for item in listdir(local_folder_path):
             item_path = join(local_folder_path, item)
             if isfile(item_path):
-                ep.upload_file(session, parent_id, item_path)
+                self.upload_local_file(parent_id, item_path)
             else:
-                print(item_path)
-                folder = self.get_or_create_folder_by_name(parent_id, item)
-                print(folder)
-                self.upload_local_folder(folder['id'], item_path)
-                return
+                folder = self.get_or_create_remote_folder_by_name(parent_id, item)
+                if folder:
+                    self.upload_local_files(folder['id'], item_path)
+
+    def upload_local_files(self, parent_id, local_folder_path):
+        for item in listdir(local_folder_path):
+            item_path = join(local_folder_path, item)
+            if isfile(item_path):
+                self.upload_local_file(parent_id, item_path)
+            else:
+                folder = self.get_or_create_remote_folder_by_name(parent_id, item)
+                if folder:
+                    self.upload_local_files(folder['id'], item_path)
 
     def list_files(self, startpath):
         for root, dirs, files in os.walk(startpath):
             for f in files:
                 yield '{}\{}'.format(root.replace(startpath + '\\', ''), f)
 
-    def get_all_items(self, parent_id, page=1, size=100):
-        ep = EndPoint()
-        sess = ep.connect()
-        url_params = dict(cwd=parent_id, page=page, size=size)
+    def get_all_remote_items(self, parent_id):
+        url_params = dict(cwd=parent_id, page=1, size=100)
         url = BROWSE_CONTENTS.format(**url_params)
-        resp = ep.get(url)
-        print('get_all_items parent_id', parent_id)
-        print('get_all_items url', url)
-        print('get_all_items resp', resp.content)
-        yield from resp.json()
-        if resp.headers.get('X-Pagination', None):
+        resp = self.api.get(url)
+        if resp.status_code == 500:
+            return []
+        pages = json.loads(resp.headers['X-Pagination'])
+        items = resp.json()
+        while pages['nextPageLink']:
+            resp = self.api.get(resp.headers['X-Pagination'])
             pages = json.loads(resp.headers['X-Pagination'])
-            if pages['currentPage'] <= pages['totalPages']:
-                yield from self.get_all_items(parent_id, pages['currentPage'] + 1, size)
+            items += resp.json()
+        return items
+        # if resp.headers.get('X-Pagination', None):
 
-    def get_all_folders(self, parent_id):
-        for item in self.get_all_items(parent_id):
-            if item['type'] == 'Folder':
-                yield item
+    def get_all_remote_folders(self, parent_id):
+        return filter(lambda x: x['type'] == 'Folder', self.get_all_remote_items(parent_id))
+
+    def get_all_remote_files(self, parent_id):
+        return filter(lambda x: x['type'] == 'File', self.get_all_remote_items(parent_id))
 
     # returns the first found folder with exact name
-    def get_first_folder_by_name(self, parent_id, name):
-        for item in self.get_all_folders(parent_id):
+    def get_first_remote_folder_by_name(self, parent_id, name):
+        for item in self.get_all_remote_folders(parent_id):
             if item['name'] == name:
                 return item
 
-    def get_or_create_folder_by_name(self, parent_id, name):
-        folder = self.get_first_folder_by_name(parent_id, name)
+    # returns the first found folder with exact name
+    def get_first_remote_file_by_name(self, parent_id, name):
+        for item in self.get_all_remote_files(parent_id):
+            if item['name'] == name:
+                return item
+
+    def get_or_create_remote_folder_by_name(self, parent_id, name):
+        folder = self.get_first_remote_folder_by_name(parent_id, name)
+        # print('Folder "{}" already exists'.format(name))
         if folder:
             return folder
 
-        ep = EndPoint()
-        ep.create_folder(name, parent_id)
+        self.api.create_folder(name, parent_id)
 
         starttime = time()
         while True:
-            print(parent_id, name)
-            folder = self.get_first_folder_by_name(parent_id, name)
+            folder = self.get_first_remote_folder_by_name(parent_id, name)
             if folder:
                 return folder
             sleep(1+(time() - starttime) * 2)
 
-    def md5(self, file_path):
+    def upload_local_file(self, parent_id, local_file_path):
+        if not os.path.isfile(local_file_path):
+            raise IOError('File %s not found' % local_file_path)
+        filename = os.path.basename(local_file_path)
+
+        if self.get_first_remote_file_by_name(parent_id, filename):
+            print('File "{}" already exists'.format(filename))
+            return
+
+        with open(local_file_path, 'rb') as fh:
+            file = {'file': (filename, fh, 'multipart/mixed')}
+            url = UPLOAD.format(id=self.api.session['owner'])
+            data = {'parentId': parent_id}
+            resp = self.api.post(url, data, files=file)
+
+    def get_local_file_md5(self, local_file_path):
         hash_md5 = hashlib.md5()
-        with open(file_path, "rb") as f:
+        with open(local_file_path, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
