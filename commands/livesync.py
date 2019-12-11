@@ -3,13 +3,13 @@
 from parser_helper import HandlerBase
 from api import Api
 from filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from config import BROWSE_CONTENTS, CONTENTS, FILE, UPLOAD
+from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
 import os
 import json
-from clint.textui import colored
+from clint.textui import colored, progress
 from time import time, sleep
-from os import listdir
-from os.path import isfile, isdir, join
+from os import listdir, mkdir
+from os.path import isfile, isdir, exists, join
 import hashlib
 
 
@@ -86,9 +86,9 @@ class LiveSync(HandlerBase):
         # aaa = self.get_or_create_folder_by_name('a16f22fe-c36a-4d57-ad78-19746007c82d', 'as212322dw')
         # print(((aaa)))
 
-        self.upload_local_files(
-            self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
-
+        # self.upload_local_files(
+        #     self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
+        self.download_remote_files(self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
         # print(json.dumps(self.get_all_remote_items('b4dcb4f3-ce02-4566-b18e-32c1a23873ed'), indent=4))
         return
         # Local files
@@ -161,14 +161,32 @@ class LiveSync(HandlerBase):
         lfiles.store_log()
 
     def download_remote_files(self, parent_id, local_folder_path):
-        for item in listdir(local_folder_path):
-            item_path = join(local_folder_path, item)
-            if isfile(item_path):
-                self.upload_local_file(parent_id, item_path)
-            else:
-                folder = self.get_or_create_remote_folder_by_name(parent_id, item)
-                if folder:
-                    self.upload_local_files(folder['id'], item_path)
+        for item in self.get_all_remote_items(parent_id):
+            item_path = join(local_folder_path, item['name'])
+            if item['type'] == 'File':
+                if not exists(item_path):
+                    rec = {'id': item['blob']['id'], 'file_id': item['id']}
+                    self.download_remote_file(rec, item_path)
+                else:
+                    print('File "{}" already exists'.format(item_path))
+            elif item['type'] == 'Folder':
+                if not exists(item_path): mkdir(item_path)
+                self.download_remote_files(item['id'], item_path)
+                
+
+
+    def download_remote_file(self, record, path):
+        url = DOWNLOAD.format(**record)
+        result = self.api.get(url=url, stream=True)
+        assert result.ok, 'Problem loading file {}'.format(path)
+
+        result.raw.decode_content = True
+        it = result.iter_content(chunk_size=1024)
+        with open(path, 'wb') as f:
+            for i, item in enumerate(it):
+                if item:
+                    f.write(item)
+                    f.flush()
 
     def upload_local_files(self, parent_id, local_folder_path):
         for item in listdir(local_folder_path):
