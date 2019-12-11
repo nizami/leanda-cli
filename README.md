@@ -2,29 +2,43 @@
 
 Leanda Command Line Interface (CLI) is intended for installation on users computers and will serve as another "client" for Leanda platform.
 
+## Requirements
+
+Docker 19.x
+Python 3.x (for development)
+
 ## Quickstart
 
-You will need Python 2.7 to get started, so be sure to have an up-to-date Python 2.x installation.
-Osdr-cli and its dependencies support Python 3. You could start using Python 3, but there are a few things to be aware of.
-You need to use Python 3.6 or higher. Older versions are not supported.  You’ll probably want to use [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
-You should define environment variables (or default values will be used):
+```bash
+git clone https://github.com/ArqiSoft/leanda-cli
+cd leanda-cli
+
+docker build -t leanda/cli:latest .
+docker-compose up -d
+docker exec -it leanda-cli /bin/bash
+```
+
+Run help command
 
 ```bash
-WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
-IDENTITY_SERVER_URL = 'https://id.your-company.com/auth/realms/Leanda'
+python leanda.py -h
 ```
 
-```terminal
-git clone https://github.com/<this-repository>/leanda-cli.git
-cd leanda-cli
-pip install -r requirements.txt
-python leanda.py --help
+Run livesync command
+
+```bash
+python leanda.py login -u my_name -p my_password
+python leanda.py livesync -l ./leanda-sync
 ```
 
-If you don't have pip installed try
+`./leanda-sync` is a mounted folder. You can change it in the `docker-compose.yml` file `volume` section.
+Other parameters like `WEB_API_URL` are located in the `environment` section.
 
-```terminal
-python -m pip install -r requirements.txt
+Stop docker-compose
+
+```bash
+exit
+docker-compose down
 ```
 
 ## Commands Summary
@@ -54,7 +68,7 @@ Allows to login and reset session information for an Leanda user.
 
 ### Parameters for `login`
 
-```terminal
+```bash
 -u, --username   your leanda username.
 -p, --password   your leanda password
 -v, --verbosity  set verbosity level.
@@ -62,12 +76,12 @@ Allows to login and reset session information for an Leanda user.
 
 Examples:
 
-```terminal
-$ leanda.py login -u<user-name> -p<password>
-$ leanda.py login --verbosity -u<user-name> -p<password>
-$ leanda.py login -v -u<user-name> -p<password>
-$ leanda.py login -vv -u<user-name> -p<password>
-$ leanda.py login -u<user-name> -p
+```bash
+leanda.py login -u<user-name> -p<password>
+leanda.py login --verbosity -u<user-name> -p<password>
+leanda.py login -v -u<user-name> -p<password>
+leanda.py login -vv -u<user-name> -p<password>
+leanda.py login -u<user-name> -p
 Password:
 ```
 
@@ -77,13 +91,13 @@ Check authorization and explore session data.
 
 ### Parameters for `whoami`
 
-```terminal
+```bash
 -v, --verbosity  set verbosity level.
 ```
 
 Examples:
 
-```terminal
+```bash
 leanda.py whoami --verbosity
 leanda.py whoami -vv
 leanda.py whoami -vvv
@@ -99,7 +113,7 @@ No parameters
 
 Examples:
 
-```terminal
+```bash
 leanda.py logout
 ```
 
@@ -109,13 +123,13 @@ Identify current Leanda working directory.
 
 ### Parameters for `pwd`
 
-```terminal
+```bash
 -v, --verbosity  set verbosity level.
 ```
 
 Examples:
 
-```terminal
+```bash
 leanda.py pwd
 leanda.py pwd --verbosity
 leanda.py pwd -vv
@@ -128,7 +142,7 @@ Browse remote Leanda folder.
 
 ### Parameters for `ls`
 
-```terminal
+```bash
 container - Remote Leanda user's folder or none for current working folder.
             Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
@@ -140,7 +154,7 @@ container - Remote Leanda user's folder or none for current working folder.
 
 Examples:
 
-```terminal
+```bash
 leanda.py ls c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 leanda.py ls 2e01
 leanda.py ls -p10
@@ -153,7 +167,7 @@ Change Leanda's current working directory.
 
 ### Parameters for `cd`
 
-```terminal
+```bash
 container - Remote Leanda user's folder, none for home  folder or '..' for
             parent folder. Leanda user's folder can be choosed by its full id
             system wide or by substring for subfolders in current folder.
@@ -163,17 +177,17 @@ container - Remote Leanda user's folder, none for home  folder or '..' for
 
 Examples:
 
-```terminal
-$ leanda.py ls
+```bash
+leanda.py ls
 File
     33.mol               Records(  1) Processed  c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
     combined lysomotroph Records( 55) Processed  00160000-ac12-0242-c20e-08d56e29a481
 
-$ leanda.py cd 33
-$ leanda.py cd a481
-$ leanda.py cd
-$ leanda.py cd ..
-$ leanda.py cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda.py cd 33
+leanda.py cd a481
+leanda.py cd
+leanda.py cd ..
+leanda.py cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## rm
@@ -182,7 +196,7 @@ Allows to remove file or folder
 
 ### Parameters for `rm`
 
-```terminal
+```bash
 container - Remote Leanda user's folder. Leanda user's folder can be choosed by
             its full id  system wide or by substring for subfolders in current
             folder. Substring compared to folder name starting from the beggining
@@ -191,7 +205,7 @@ container - Remote Leanda user's folder. Leanda user's folder can be choosed by
 
 Examples:
 
-```terminal
+```bash
 leanda.py rm a481
 leanda.py rm abc
 leanda.py rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
@@ -203,7 +217,7 @@ Allows uploading a local file into the BLOB (raw file) store.
 
 ### Parameters for `upload`
 
-```terminal
+```bash
 container - Remote Leanda user's folder, none for working folder.
             Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
@@ -217,7 +231,7 @@ container - Remote Leanda user's folder, none for working folder.
 
 Examples:
 
-```terminal
+```bash
 leanda.py upload -p path-to-file
 leanda.py upload -p path-to-file1 -p path-to-file2 -p path-to-file3
 leanda.py upload -p path-to-file -n new-name to file 'filename'
@@ -231,7 +245,7 @@ Allows downloading a remote file to local host.
 
 ### Parameters for `download`
 
-```terminal
+```bash
 container - Remote Leanda user's folder, none for working folder.
             Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
@@ -243,7 +257,7 @@ container - Remote Leanda user's folder, none for working folder.
 
 Examples:
 
-```terminal
+```bash
 leanda.py upload abc -o path-to-file
 leanda.py upload a481 -f -o path-to-file1
 leanda.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
@@ -253,7 +267,7 @@ leanda.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
 
 Two-way synchronization of local folder with the Leanda user's folder. Comparision between folders based on file names. For more precise comparision see -ul and -ur keys.
 
-```terminal
+```bash
  -l, --local-folder - Path to local folder or none for current working directory
  -r, --remote-folder - Remote Leanda user's folder or none for current working folder.
                        Leanda user's folder can be choosed by its full id system wide
@@ -267,7 +281,7 @@ Two-way synchronization of local folder with the Leanda user's folder. Comparisi
 
 Examples:
 
-```terminal
+```bash
 leanda.py livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 leanda.py livesync -l /path/to/folder -f -r 2e01 -ul
 leanda.py livesync -ur
@@ -277,7 +291,7 @@ leanda.py livesync -ur
 
 Allows to list all items from Leanda using queries.
 
-```terminal
+```bash
   -q, --query - Filter models by subquery
   -n, --name  - Filter models by substring
   -s, --short-notation
@@ -293,8 +307,8 @@ Allows to list all items from Leanda using queries.
 
 Examples:
 
-```terminal
-leanda.py items 
+```bash
+leanda.py items
 leanda.py items -v
 leanda.py items -vv
 leanda.py items -n png
@@ -309,8 +323,8 @@ Allows to list models from Leanda using queries. Same as `items`, but add preset
 
 Examples:
 
-```terminal
-leanda.py models 
+```bash
+leanda.py models
 leanda.py models -v
 leanda.py models -vv
 leanda.py items -n ada
@@ -326,8 +340,8 @@ Allows to list recordsets from Leanda using queries. Same as `items`, but add pr
 
 Examples:
 
-```terminal
-leanda.py recordsets 
+```bash
+leanda.py recordsets
 leanda.py recordsets -v
 leanda.py recordsets -vv
 leanda.py recordsets -n combined
@@ -341,7 +355,7 @@ leanda.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv
 
 Allows to run Machine Learning command train.
 
-```terminal
+```bash
   container - Remote Leanda user's folder, none for working folder.
               Leanda user's folder can be choosed by its full id system wide
               or by substring for subfolders in current folder.
@@ -354,7 +368,7 @@ Allows to run Machine Learning command train.
 
 Examples:
 
-```terminal
+```bash
 leanda.py train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml 
 leanda.py train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml 
 leanda.py train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml 
@@ -366,7 +380,7 @@ leanda.py train data_solu -f test5.model -m sample_files/train_sdf_model.yaml
 
 Allows to run Machine Learning command predict.
 
-```terminal
+```bash
  -f - --folder-name - Output folder name
  -m - --model - Leanda model's file id.
  -r - --recordset - Leanda recordsets's file id.
@@ -374,7 +388,7 @@ Allows to run Machine Learning command predict.
 
 Examples:
 
-```terminal
+```bash
 leanda.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
 
 ```
@@ -385,7 +399,7 @@ Allows to initialize category tree with basic structure.
 
 Examples:
 
-```terminal
+```bash
 leanda.py categories
 
 ```

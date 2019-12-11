@@ -8,7 +8,7 @@ from config import CONTENTS, NODE, PREDICT
 
 class Predict(HandlerBase):
     """
-    osdr predict
+    leanda predict
     Allows to run Machine Learning command predict.
     """
     url = 'https://api.dataledger.io/osdr/v1/api/me'

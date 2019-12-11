@@ -62,11 +62,10 @@ def init_parser():
            Leanda Command Line Interface (CLI) is intended for installation
            on users computers and will serve as another "client"
            for Leanda platform.'''
-    epilog = 'SciDataSoft.com, Rockville, MD 20850, USA'
+    epilog = 'ArqiSoft.com, Gaithersburg, MD 20878, USA'
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
     return parser
-
 
 def main():
     parser = init_parser()
