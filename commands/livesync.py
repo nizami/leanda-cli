@@ -15,15 +15,15 @@ import hashlib
 
 class LiveSync(HandlerBase):
     """
-    osdr livesync
-    Two-way synchronization of local folder with the user's OSDR folder.
+    leanda livesync
+    Two-way synchronization of local folder with the user's Leanda folder.
     """
     url = 'https://api.dataledger.io/osdr/v1/api/me'
     info = '''
             name: livesync
             help: >
                 Two-way synchronization of local folder
-                with the OSDR user's folder. Comparision between
+                with the Leanda user's folder. Comparision between
                 folders based on file names. For more precise
                 comparision see -ul and -ur keys.
             params:
@@ -43,9 +43,9 @@ class LiveSync(HandlerBase):
                     dest: container
                     default: .
                     help: >
-                          Remote OSDR user's folder
+                          Remote Leanda user's folder
                           or none for current working folder.
-                          OSDR user's folder can be choosed by its
+                          Leanda user's folder can be choosed by its
                           full id system wide or by substring for
                           subfolders in current folder.
                           Substring compared to folder name starting
@@ -55,7 +55,7 @@ class LiveSync(HandlerBase):
                         - -ul
                         - --update-local
                     action: store_true
-                    help: Compare by name and OSDR file's version
+                    help: Compare by name and Leanda file's version
                 -
                     names:
                         - -ur
@@ -82,14 +82,9 @@ class LiveSync(HandlerBase):
             "'{folder}' is not a folder".format(folder=self.folder)
 
         self.api = Api()
-        # self.api.create_folder('so', self.api.session['cwd'])
-        # aaa = self.get_or_create_folder_by_name('a16f22fe-c36a-4d57-ad78-19746007c82d', 'as212322dw')
-        # print(((aaa)))
 
-        # self.upload_local_files(
-        #     self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
-        self.download_remote_files(self.api.session['cwd'], 'C:\w\projects\ArqiSoft\leanda\leanda-sync')
-        # print(json.dumps(self.get_all_remote_items('b4dcb4f3-ce02-4566-b18e-32c1a23873ed'), indent=4))
+        self.upload_local_files(self.api.session['cwd'], self.folder)
+        self.download_remote_files(self.api.session['cwd'], self.folder)
         return
         # Local files
         lfiles = ListHelper(path=self.folder,
@@ -170,10 +165,9 @@ class LiveSync(HandlerBase):
                 else:
                     print('File "{}" already exists'.format(item_path))
             elif item['type'] == 'Folder':
-                if not exists(item_path): mkdir(item_path)
+                if not exists(item_path):
+                    mkdir(item_path)
                 self.download_remote_files(item['id'], item_path)
-                
-
 
     def download_remote_file(self, record, path):
         url = DOWNLOAD.format(**record)
@@ -194,7 +188,8 @@ class LiveSync(HandlerBase):
             if isfile(item_path):
                 self.upload_local_file(parent_id, item_path)
             else:
-                folder = self.get_or_create_remote_folder_by_name(parent_id, item)
+                folder = self.get_or_create_remote_folder_by_name(
+                    parent_id, item)
                 if folder:
                     self.upload_local_files(folder['id'], item_path)
 
@@ -250,6 +245,8 @@ class LiveSync(HandlerBase):
             if folder:
                 return folder
             sleep(1+(time() - starttime) * 2)
+            if time() - starttime > 10:
+                raise TimeoutError()
 
     def upload_local_file(self, parent_id, local_file_path):
         if not os.path.isfile(local_file_path):

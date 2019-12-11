@@ -1,6 +1,6 @@
-# OSDR-Cli
+# Leanda-Cli
 
-OSDR Command Line Interface (CLI) is intended for installation on users computers and will serve as another "client" for OSDR platform.
+Leanda Command Line Interface (CLI) is intended for installation on users computers and will serve as another "client" for Leanda platform.
 
 ## Quickstart
 
@@ -11,7 +11,7 @@ You should define environment variables (or default values will be used):
 
 ```bash
 WEB_API_URL = 'https://api.dev.dataledger.io/osdr/v1/api'
-IDENTITY_SERVER_URL = 'https://id.your-company.com/auth/realms/OSDR'
+IDENTITY_SERVER_URL = 'https://id.your-company.com/auth/realms/Leanda'
 ```
 
 ```terminal
@@ -31,32 +31,32 @@ python -m pip install -r requirements.txt
 
 |Command| Usage|
 | ----- | ---------- |
-|`leanda.py` [`login`](#login)| Allows to login and store the update session information for an OSDR user.|
+|`leanda.py` [`login`](#login)| Allows to login and store the update session information for an Leanda user.|
 |`leanda.py` [`whoami`](#whoami)| Check authorization and explore session data.|
 |`leanda.py` [`logout`](#logout)| Do logout. Session data is removed.|
-|`leanda.py` [`pwd`](#pwd)| Identify current OSDR working directory.|
-|`leanda.py` [`cd`](#cd)| Change OSDR's current working directory.|
-|`leanda.py` [`ls`](#ls)| Browse remote OSDR folder. |
+|`leanda.py` [`pwd`](#pwd)| Identify current Leanda working directory.|
+|`leanda.py` [`cd`](#cd)| Change Leanda's current working directory.|
+|`leanda.py` [`ls`](#ls)| Browse remote Leanda folder. |
 |`leanda.py` [`rm`](#rm)| Allows to remove file or folder. |
 |`leanda.py` [`upload`](#upload)| Allows uploading a local file into the BLOB (raw file) store.|
-|`leanda.py` [`download`](#download)| Allows to download an OSDR file.|
-|`leanda.py` [`livesync`](#livesync)| Two-way synchronization of local folder with the OSDR user's folder. |
-|`leanda.py` [`items`](#items)| Allows to list all items from OSDR using queries. |
-|`leanda.py` [`models`](#models)| Allows to list models from OSDR using queries. |
-|`leanda.py` [`recordsets`](#recordsets)| Allows to list recordsets from OSDR using queries. |
+|`leanda.py` [`download`](#download)| Allows to download an Leanda file.|
+|`leanda.py` [`livesync`](#livesync)| Two-way synchronization of local folder with the Leanda user's folder. |
+|`leanda.py` [`items`](#items)| Allows to list all items from Leanda using queries. |
+|`leanda.py` [`models`](#models)| Allows to list models from Leanda using queries. |
+|`leanda.py` [`recordsets`](#recordsets)| Allows to list recordsets from Leanda using queries. |
 |`leanda.py` [`train`](#train)| Allows to run Machine Learning command train. |
 |`leanda.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
 |`leanda.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
 
 ## login
 
-Allows to login and reset session information for an OSDR user.
+Allows to login and reset session information for an Leanda user.
 
 ### Parameters for `login`
 
 ```terminal
--u, --username   your osdr username.
--p, --password   your osdr password
+-u, --username   your leanda username.
+-p, --password   your leanda password
 -v, --verbosity  set verbosity level.
 ```
 
@@ -105,7 +105,7 @@ leanda.py logout
 
 ## pwd
 
-Identify current OSDR working directory.
+Identify current Leanda working directory.
 
 ### Parameters for `pwd`
 
@@ -124,13 +124,13 @@ leanda.py pwd -vvv
 
 ## ls
 
-Browse remote OSDR folder.
+Browse remote Leanda folder.
 
 ### Parameters for `ls`
 
 ```terminal
-container - Remote OSDR user's folder or none for current working folder.
-            OSDR user's folder can be choosed by its full id system wide
+container - Remote Leanda user's folder or none for current working folder.
+            Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
             Substring compared to folder name starting from the beggining
             or to folder id ending.
@@ -149,13 +149,13 @@ leanda.py ls -s20 -2
 
 ## cd
 
-Change OSDR's current working directory.
+Change Leanda's current working directory.
 
 ### Parameters for `cd`
 
 ```terminal
-container - Remote OSDR user's folder, none for home  folder or '..' for
-            parent folder. OSDR user's folder can be choosed by its full id
+container - Remote Leanda user's folder, none for home  folder or '..' for
+            parent folder. Leanda user's folder can be choosed by its full id
             system wide or by substring for subfolders in current folder.
             Substring compared to folder name starting from the beggining
             or to folder id ending.
@@ -183,7 +183,7 @@ Allows to remove file or folder
 ### Parameters for `rm`
 
 ```terminal
-container - Remote OSDR user's folder. OSDR user's folder can be choosed by
+container - Remote Leanda user's folder. Leanda user's folder can be choosed by
             its full id  system wide or by substring for subfolders in current
             folder. Substring compared to folder name starting from the beggining
             or to folder id ending.
@@ -204,8 +204,8 @@ Allows uploading a local file into the BLOB (raw file) store.
 ### Parameters for `upload`
 
 ```terminal
-container - Remote OSDR user's folder, none for working folder.
-            OSDR user's folder can be choosed by its full id system wide
+container - Remote Leanda user's folder, none for working folder.
+            Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
             Substring compared to folder name starting from the beggining
             or to folder id ending.
@@ -232,8 +232,8 @@ Allows downloading a remote file to local host.
 ### Parameters for `download`
 
 ```terminal
-container - Remote OSDR user's folder, none for working folder.
-            OSDR user's folder can be choosed by its full id system wide
+container - Remote Leanda user's folder, none for working folder.
+            Leanda user's folder can be choosed by its full id system wide
             or by substring for subfolders in current folder.
             Substring compared to folder name starting from the beggining
             or to folder id ending.
@@ -251,16 +251,16 @@ leanda.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
 
 ## livesync
 
-Two-way synchronization of local folder with the OSDR user's folder. Comparision between folders based on file names. For more precise comparision see -ul and -ur keys.
+Two-way synchronization of local folder with the Leanda user's folder. Comparision between folders based on file names. For more precise comparision see -ul and -ur keys.
 
 ```terminal
  -l, --local-folder - Path to local folder or none for current working directory
- -r, --remote-folder - Remote OSDR user's folder or none for current working folder.
-                       OSDR user's folder can be choosed by its full id system wide
+ -r, --remote-folder - Remote Leanda user's folder or none for current working folder.
+                       Leanda user's folder can be choosed by its full id system wide
                        or by substring for subfolders in current folder. Substring
                        compared to folder name starting from the begining or to
                        folder id ending.
- -ul, --update-local - Compare by name and OSDR file's version
+ -ul, --update-local - Compare by name and Leanda file's version
  -ur, --update-remote - Compare by name and last modification time.
 
 ```
@@ -275,7 +275,7 @@ leanda.py livesync -ur
 
 ## items
 
-Allows to list all items from OSDR using queries.
+Allows to list all items from Leanda using queries.
 
 ```terminal
   -q, --query - Filter models by subquery
@@ -305,7 +305,7 @@ leanda.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints
 
 ## models
 
-Allows to list models from OSDR using queries. Same as `items`, but add preset filter `SubType eq 'Model'`
+Allows to list models from Leanda using queries. Same as `items`, but add preset filter `SubType eq 'Model'`
 
 Examples:
 
@@ -322,7 +322,7 @@ leanda.py models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f 
 
 ## recordsets
 
-Allows to list recordsets from OSDR using queries. Same as `items`, but add preset filter `SubType eq 'Records'`
+Allows to list recordsets from Leanda using queries. Same as `items`, but add preset filter `SubType eq 'Records'`
 
 Examples:
 
@@ -342,8 +342,8 @@ leanda.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv
 Allows to run Machine Learning command train.
 
 ```terminal
-  container - Remote OSDR user's folder, none for working folder.
-              OSDR user's folder can be choosed by its full id system wide
+  container - Remote Leanda user's folder, none for working folder.
+              Leanda user's folder can be choosed by its full id system wide
               or by substring for subfolders in current folder.
               Substring compared to folder name starting from the beggining
               or to folder id ending.
@@ -368,8 +368,8 @@ Allows to run Machine Learning command predict.
 
 ```terminal
  -f - --folder-name - Output folder name
- -m - --model - OSDR model's file id.
- -r - --recordset - OSDR recordsets's file id.
+ -m - --model - Leanda model's file id.
+ -r - --recordset - Leanda recordsets's file id.
 ```
 
 Examples:

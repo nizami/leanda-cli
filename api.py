@@ -27,22 +27,14 @@ class Api(object):
     session = None
 
     def __init__(self):
-        from os.path import expanduser
-        folder = "{}/osdr".format(expanduser("~"))
-        try:
-            os.stat(folder)
-        except Exception:
-            os.mkdir(folder)
-
-        self.storage = "{}/osdr.data".format(folder)
+        self.storage = "./leanda.data"
         client_id = self.API_AUTH['client_id']
         client = LegacyApplicationClient(client_id=client_id)
 
         self.oauth = OAuth2Session(client=client)
         self.oauth.verify = False
         requests.packages.urllib3.disable_warnings()
-
-        self.session = self.connect();
+        self.session = self.connect()
 
     def persistent_storage(self, mode='r'):
         return open(self.storage, "%sb" % mode)

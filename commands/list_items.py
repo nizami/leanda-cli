@@ -11,12 +11,12 @@ from urllib.parse import quote
 
 class ListItems(HandlerBase):
     """
-    Allows to list contents of OSDR using queries.
+    Allows to list contents of Leanda using queries.
     """
     url = 'https://api.dataledger.io/osdr/v1/api/me'
     info = '''
             name: items
-            help: Allows to list contents of OSDR using queries.
+            help: Allows to list contents of Leanda using queries.
             params:
                 -
                     names:

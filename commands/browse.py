@@ -11,11 +11,11 @@ class PWD(HandlerBase):
     """
     Allows to get info about current working directory
     Command: pwd
-    osdr login {username} {password}
+    leanda login {username} {password}
     """
     info = '''
             name: pwd
-            help: Identify current OSDR working directory.
+            help: Identify current Leanda working directory.
             params:
                 -
                     names:
@@ -33,7 +33,7 @@ class PWD(HandlerBase):
         sess = ep.connect()
 
         path, id_path = ep.get_full_path(sess['cwd'])
-        path = '/osdr/home/{username}/'.format(**sess) + path
+        path = '/leanda/home/{username}/'.format(**sess) + path
         id_path = '/{owner}/'.format(**sess) + id_path
 
         print("Working directory path: {path}".format(path=path))
@@ -46,11 +46,11 @@ class CD(HandlerBase):
     """
     Allows to get info about current working directory
     Command: pwd
-    osdr login {username} {password}
+    leanda login {username} {password}
     """
     info = '''
             name: cd
-            help: Change OSDR's current working directory.
+            help: Change Leanda's current working directory.
             params:
                 -
                     names:
@@ -58,9 +58,9 @@ class CD(HandlerBase):
                     nargs: '?'
                     default: .
                     help: >
-                          Remote OSDR user's folder
+                          Remote Leanda user's folder
                           or none for home folder.
-                          OSDR user's folder can be choosed by its
+                          Leanda user's folder can be choosed by its
                           full id system wide or by substring for
                           subfolders in current folder.
                           Substring compared to folder name starting
@@ -84,7 +84,7 @@ class CD(HandlerBase):
             if context.get('parentId'):
                 ep.set_workdir(context.get('parentId'))
             else:
-                print('You are at /osdr/home/{}'.format(session['username']))
+                print('You are at /leanda/home/{}'.format(session['username']))
             return
 
         list_url = CONTENTS.format(session['cwd'])
@@ -101,7 +101,7 @@ class RM(HandlerBase):
     """
     Allows to get info about current working directory
     Command: pwd
-    osdr login {username} {password}
+    leanda login {username} {password}
     """
     info = '''
             name: rm 
@@ -112,9 +112,9 @@ class RM(HandlerBase):
                         - container
                     nargs: 1
                     help: >
-                          Remote OSDR user's folder
+                          Remote Leanda user's folder
                           or none for current working folder.
-                          OSDR user's folder can be choosed by its
+                          Leanda user's folder can be choosed by its
                           full id system wide or by substring for
                           subfolders in current folder.
                           Substring compared to folder name starting
@@ -141,7 +141,7 @@ class LS(HandlerBase):
     """
     Allows to get info about current working directory
     Command: pwd
-    osdr login {username} {password}
+    leanda login {username} {password}
     """
     dataset = {'Folder': {'data': [], 'format': '\t{name:20.20} {id} ', },
                'File': {'data': [],
@@ -153,7 +153,7 @@ class LS(HandlerBase):
     pager_format = "Total records:{totalCount:<10} {title:>60} {currentPage}/{totalPages}"
     info = '''
             name: ls
-            help: Browse remote OSDR folder
+            help: Browse remote Leanda folder
             params:
                 -
                     names:
@@ -161,9 +161,9 @@ class LS(HandlerBase):
                     default: ''
                     nargs: '?'
                     help: >
-                          Remote OSDR user's folder
+                          Remote Leanda user's folder
                           or none for current working folder.
-                          OSDR user's folder can be choosed by its
+                          Leanda user's folder can be choosed by its
                           full id system wide or by substring for
                           subfolders in current folder.
                           Substring compared to folder name starting

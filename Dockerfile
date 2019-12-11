@@ -1,21 +1,21 @@
-FROM python:3.6-slim
+FROM python:3.8-slim
 
+COPY requirements.txt /
+RUN pip install -r /requirements.txt
+
+COPY . /app
 WORKDIR /app
-COPY . .
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
 
-RUN  useradd  -d /home/osdr osdr && \
-     mkdir -p /home/osdr/.osdr && \
-     chmod +x osdr.py && \
-     mkdir /sandbox && \ 
-     chown osdr /sandbox && \ 
-     chown osdr -R /home/osdr
-USER osdr
-VOLUME /sandbox
-VOLUME /home/osdr
+RUN useradd  -d /app leanda && \
+    chmod +x leanda.py && \
+    mkdir -p leanda-sync && \ 
+    chown leanda -R /app
 
-WORKDIR /sandbox
-ENTRYPOINT ["python", "/app/osdr.py"]
-CMD ["-h"]
+# RUN useradd  -d /home/leanda leanda && \
+#     mkdir -p /home/leanda/.leanda && \
+#     chmod +x leanda.py && \
+#     mkdir /sandbox && \ 
+#     chown leanda /sandbox && \ 
+#     chown leanda -R /home/leanda
+USER leanda
 

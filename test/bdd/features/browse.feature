@@ -1,9 +1,9 @@
-Feature: Browse OSDR 
+Feature: Browse Leanda 
 
-Scenario: Get current working OSDR folder
-   Given I want to get current working OSDR folder
+Scenario: Get current working Leanda folder
+   Given I want to get current working Leanda folder
     When I run the command
-    Then I get full OSDR path current working folder
+    Then I get full Leanda path current working folder
 
 # params:
 #     -
@@ -14,65 +14,65 @@ Scenario: Get current working OSDR folder
 #         action: count
 #         help: Set verbosity level
 
-Scenario: Change current working OSDR folder to home folder
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to home folder
+   Given I want change current working Leanda folder
     When I run the command
     Then I am in my home remote folder
 
-Scenario: Change current working OSDR folder to parent folder
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to parent folder
+   Given I want change current working Leanda folder
      And set path '..'
     When I run the command
     Then I am in parent remote folder
 
-Scenario: Change current working OSDR folder to parent folder whilst in home folder
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to parent folder whilst in home folder
+   Given I want change current working Leanda folder
      And set path '..'
      And I am in parent remote folder
     When I run the command
     Then I get an error
 
 
-Scenario: Change current working OSDR folder to folder identified by full id
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder identified by full id
+   Given I want change current working Leanda folder
      And set full id
     When I run the command
     Then I am in other remote folder
 
 
 
-Scenario: Change current working OSDR folder to folder identified by part id
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder identified by part id
+   Given I want change current working Leanda folder
      And set part id
     When I run the command
     Then I am in other remote folder
 
-Scenario: Change current working OSDR folder to folder identified by part name
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder identified by part name
+   Given I want change current working Leanda folder
      And set part
     When I run the command
     Then I am in other remote folder
 
-Scenario: Change current working OSDR folder to folder ambiguously identifyed by part name
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder ambiguously identifyed by part name
+   Given I want change current working Leanda folder
      And set ambiguously identifyed part name
     When I run the command
     Then I get an error
 
-Scenario: Change current working OSDR folder to folder ambiguously identifyed by part id
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder ambiguously identifyed by part id
+   Given I want change current working Leanda folder
      And set ambiguously identifyed part id
     When I run the command
     Then I get an error
 
-Scenario: Change current working OSDR folder to folder identified by invalid full id
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder identified by invalid full id
+   Given I want change current working Leanda folder
      And set invalid full id
     When I run the command
     Then I get an error
 
-Scenario: Change current working OSDR folder to folder identified by not exists full id
-   Given I want change current working OSDR folder
+Scenario: Change current working Leanda folder to folder identified by not exists full id
+   Given I want change current working Leanda folder
      And set not existed full id
     When I run the command
     Then I get an error

@@ -4,7 +4,7 @@
 # - json meta for sdf file
 # - yaml meta for sdf file
 # do cleanup after Scenario
-Feature: Train OSDR recordset
+Feature: Train Leanda recordset
 
 
 # container
@@ -117,10 +117,10 @@ Scenario: Store trained models to existed folder
 #         names:
 #             - container
 #         help: >
-#               Remote OSDR SDF file id.
-#               OSDR file can be choosed by its
+#               Remote Leanda SDF file id.
+#               Leanda file can be choosed by its
 #               full id system wide or by substring in
-#               current OSDR folder.
+#               current Leanda folder.
 #               Substring compared to filename starting
 #               from the beggining or to file id ending.
 #     -

@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+    leanda-cli:
+        container_name: leanda-cli
+        image: leanda/cli:latest
+        environment:
+            - WEB_API_URL=http://localhost/core-api/v1/api
+            - WEB_STORAGE_API_URL=http://localhost/blob/v1/api
+            - IDENTITY_SERVER_URL=https://id.leanda.io/auth/realms/OSDR
+            - OAUTHLIB_INSECURE_TRANSPORT=1
+            - SYNC_FOLDER=c:\leanda-sync
+        command: tail -f /dev/null
+        volumes:
+            - c:\leanda-sync:/app/leanda-sync
+        network_mode: host

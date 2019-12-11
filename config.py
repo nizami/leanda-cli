@@ -1,20 +1,17 @@
 # _*_ encoding: utf-8 _*_
 import os
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-# # os.environ['WEB_API_URL'] = 'http://api.leanda.io/core-api/v1/api'
-# os.environ['WEB_API_URL'] = 'http://localhost/core-api/v1/api'
-
-# os.environ['IDENTITY_SERVER_URL'] = 'http://localhost:8080/auth/realms/OSDR'
-os.environ['WEB_API_URL'] = 'http://localhost/core-api/v1/api'
-os.environ['IDENTITY_SERVER_URL'] = 'https://id.leanda.io/auth/realms/OSDR'
 DEBUG = True
-
 WEB_API_URL = 'http://localhost/core-api/v1/api'
 WEB_STORAGE_API_URL = 'http://localhost/blob/v1/api'
 IDENTITY_SERVER_URL = 'https://id.leanda.io/auth/realms/OSDR'
+
+if 'OAUTHLIB_INSECURE_TRANSPORT' not in os.environ.keys():
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 if 'WEB_API_URL' in os.environ.keys():
     WEB_API_URL = os.environ['WEB_API_URL']
+if 'WEB_STORAGE_API_URL' in os.environ.keys():
+    WEB_STORAGE_API_URL = os.environ['WEB_STORAGE_API_URL']
 if 'IDENTITY_SERVER_URL' in os.environ.keys():
     IDENTITY_SERVER_URL = os.environ['IDENTITY_SERVER_URL']
 
@@ -41,7 +38,7 @@ MACHINE_LEARNING_MODEL = {'FileType': 'MachineLearningModel', }
 
 ID_PATTERN = r'([0-9a-f]){8}-([0-9a-f]){4}-([0-9a-f]){4}-([0-9a-f]){4}-([0-9a-f]){12}'
 
-LAST_UPDATED = '.updated.osdr'
+LAST_UPDATED = '.updated.leanda'
 
 REMOVE_DATA = '''
               [{"value": [{"id": "%s", "type": "File"}],

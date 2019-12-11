@@ -1,8 +1,8 @@
 #PREREQUISITES
 # - logged in
-# - the file in osdr cwd
-# - the other file in osdr cwd with the name mathing the beginnig previous file
-Feature: Download an OSDR file
+# - the file in leanda cwd
+# - the other file in leanda cwd with the name mathing the beginnig previous file
+Feature: Download an Leanda file
 
 Scenario: Download by the beginning of the filename
    Given I want to download the file

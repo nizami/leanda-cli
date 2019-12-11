@@ -66,11 +66,11 @@ Scenario: Predict recordset with not recordset full id
 #     - -m
 #     - --model
 # required: True
-# help: OSDR model's file id.
+# help: Leanda model's file id.
 # -
 # names:
 #     - -r
 #     - --recordset
 # required: True
-# help: OSDR recordsets's file id.
+# help: Leanda recordsets's file id.
 # '''

@@ -6,7 +6,7 @@ from endpoint_helper import EndPoint
 
 class Convert(HandlerBase):
     """
-    osdr convert
+    leanda convert
     Convert the user to convert files.
     """
     url = 'https://api.dataledger.io/osdr/v1/api/me'

@@ -91,7 +91,7 @@ def step_impl(context, extra):
             'none': ('','')
         },
         'whoami':{
-            'more': ('-v', 'OSDR user'),
+            'more': ('-v', 'Leanda user'),
             'all': ('-vv', 'user id'),     
             'none': ('',' ')
         },

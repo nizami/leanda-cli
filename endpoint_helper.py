@@ -29,14 +29,7 @@ class EndPoint(object):
     }
 
     def __init__(self):
-        from os.path import expanduser
-        folder = "{}/osdr".format(expanduser("~"))
-        try:
-            os.stat(folder)
-        except Exception:
-            os.mkdir(folder)
-
-        self.storage = "{}/osdr.data".format(folder)
+        self.storage = "./leanda.data"
         client_id = self.API_AUTH['client_id']
         client = LegacyApplicationClient(client_id=client_id)
 

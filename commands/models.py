@@ -6,7 +6,7 @@ patt = re.compile(r'(name:\s+)(.+)?(\s)')
 
 class ListModels(ListItems):
     """
-    Allows to list models from OSDR using queries.
+    Allows to list models from Leanda using queries.
     """
 
     info = patt.sub(r'\1models\3', ListItems.info)

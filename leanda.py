@@ -59,9 +59,9 @@ def init_parser():
     :return parser: main cli parser
     """
     description = '''
-           OSDR Command Line Interface (CLI) is intended for installation
+           Leanda Command Line Interface (CLI) is intended for installation
            on users computers and will serve as another "client"
-           for OSDR platform.'''
+           for Leanda platform.'''
     epilog = 'SciDataSoft.com, Rockville, MD 20850, USA'
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog)

@@ -11,7 +11,7 @@ from config import UPLOAD, MACHINE_LEARNING_MODEL, CONTENTS
 class Upload(HandlerBase):
     """
     Allows uploading a local file into the BLOB (raw file) store.
-    osdr upload {local-file-path} [{metadata}]
+    leanda upload {local-file-path} [{metadata}]
     Command: upload
     """
     # url = 'https://api.dataledger.io/blob/v1/api/blobs/{}'
@@ -26,9 +26,9 @@ class Upload(HandlerBase):
                     default: .
                     nargs: '?'
                     help: >
-                          Remote OSDR user's folder
+                          Remote Leanda user's folder
                           or none for current working folder.
-                          OSDR user's folder can be choosed by its
+                          Leanda user's folder can be choosed by its
                           full id system wide or by substring for
                           subfolders in current folder.
                           Substring compared to folder name starting
@@ -46,7 +46,7 @@ class Upload(HandlerBase):
                         - -n
                         - --name
                     action: append
-                    help: Name OSDR file
+                    help: Name Leanda file
                 -
                     names:
                         - -m

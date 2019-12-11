@@ -1,4 +1,4 @@
-Feature: Sync OSDR and local folder
+Feature: Sync Leanda and local folder
 
 Scenario: Sync current folders
    Given I want to sync folders
@@ -139,7 +139,7 @@ Scenario: Sync current folder and remote item(but not folder) identifyed by full
 # name: livesync
 #   help: >
 #       Two-way synchronization of local folder
-#       with the OSDR user's folder. Comparision between
+#       with the Leanda user's folder. Comparision between
 #       folders based on file names. For more precise
 #       comparision see -ul and -ur keys.
 #   params:
@@ -159,9 +159,9 @@ Scenario: Sync current folder and remote item(but not folder) identifyed by full
 #           dest: container
 #           default: .
 #           help: >
-#                 Remote OSDR user's folder
+#                 Remote Leanda user's folder
 #                 or none for current working folder.
-#                 OSDR user's folder can be choosed by its
+#                 Leanda user's folder can be choosed by its
 #                 full id system wide or by substring for
 #                 subfolders in current folder.
 #                 Substring compared to folder name starting
@@ -171,7 +171,7 @@ Scenario: Sync current folder and remote item(but not folder) identifyed by full
 #               - -ul
 #               - --update-local
 #           action: store_true
-#           help: Compare by name and OSDR file's version
+#           help: Compare by name and Leanda file's version
 #       -
 #           names:
 #               - -ur

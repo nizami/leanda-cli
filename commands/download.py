@@ -8,22 +8,22 @@ import os
 
 class Download(HandlerBase):
     """
-    Allows download a  file from OSDR BLOB store.
-    osdr download {remote-id} [{metadata}]
+    Allows download a  file from Leanda BLOB store.
+    leanda download {remote-id} [{metadata}]
     Command: download
     """
     info = '''
             name: download
-            help: Allows to download an OSDR file.
+            help: Allows to download an Leanda file.
             params:
                 -
                     names:
                         - container
                     help: >
-                          Remote OSDR file id.
-                          OSDR file can be choosed by its
+                          Remote Leanda file id.
+                          Leanda file can be choosed by its
                           full id system wide or by substring in 
-                          current OSDR folder.
+                          current Leanda folder.
                           Substring compared to filename starting
                           from the beggining or to file id ending.
                 -

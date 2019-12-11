@@ -1,4 +1,4 @@
-Feature: Authorization workflow with OSDR
+Feature: Authorization workflow with Leanda
 
   Scenario: Login as valid user
     Given I am a valid user

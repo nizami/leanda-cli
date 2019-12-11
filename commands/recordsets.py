@@ -6,7 +6,7 @@ patt = re.compile(r'(name:\s+)(.+)?(\s)')
 
 class ListRecordsets(ListItems):
     """
-    Allows to list recordsets from OSDR using queries.
+    Allows to list recordsets from Leanda using queries.
     """
 
     info = patt.sub(r'\1recordsets\3', ListItems.info)

@@ -6,7 +6,7 @@
     # - json meta for sdf file
     # - yaml meta for sdf file
 # do cleanup after Scenario
-Feature: Upload OSDR files
+Feature: Upload Leanda files
 
 
 Scenario: Upload the file to remote cwd
@@ -105,7 +105,7 @@ Scenario: Upload the file to not unique identified folder
 #         - -n
 #         - --name
 #     action: append
-#     help: Name OSDR file
+#     help: Name Leanda file
 # -
 #     names:
 #         - -m

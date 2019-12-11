@@ -28,13 +28,13 @@ class Predict(HandlerBase):
                         - -m
                         - --model
                     required: True
-                    help: OSDR model's file id.
+                    help: Leanda model's file id.
                 -
                     names:
                         - -r
                         - --recordset
                     required: True
-                    help: OSDR recordsets's file id.
+                    help: Leanda recordsets's file id.
     '''
 
     def __call__(self):
