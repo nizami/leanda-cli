@@ -1,4 +1,4 @@
-# Leanda-Cli
+# Leanda-CLI
 
 Leanda Command Line Interface (CLI) is intended for installation on users computers and will serve as another "client" for Leanda platform.
 
