@@ -5,6 +5,7 @@ Leanda Command Line Interface (CLI) is intended for installation on users comput
 ## Requirements
 
 Docker 19.x
+
 Python 3.x (for development)
 
 ## Quickstart
