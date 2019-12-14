@@ -8,22 +8,22 @@ based on superclass responsible for creating an cli-interface
 """
 
 import argparse
-from parser_helper import HandlerBase
-from commands.login import Login, Logout, WhoAmI
-from commands.upload import Upload
-from commands.browse import PWD, LS, CD, RM
-from commands.livesync import LiveSync
-from commands.convert import Convert
-from commands.predict import Predict
-from commands.train import Train
-from commands.list_items import ListItems
-from commands.models import ListModels
-from commands.recordsets import ListRecordsets
-from commands.predict import Predict
-from commands.download import Download
-from commands.categories import Categories
+from leanda.parser_helper import HandlerBase
+from leanda.commands.login import Login, Logout, WhoAmI
+from leanda.commands.upload import Upload
+from leanda.commands.browse import PWD, LS, CD, RM
+from leanda.commands.livesync import LiveSync
+from leanda.commands.convert import Convert
+from leanda.commands.predict import Predict
+from leanda.commands.train import Train
+from leanda.commands.list_items import ListItems
+from leanda.commands.models import ListModels
+from leanda.commands.recordsets import ListRecordsets
+from leanda.commands.predict import Predict
+from leanda.commands.download import Download
+from leanda.commands.categories import Categories
 from clint.textui import colored
-from config import DEBUG
+from leanda.config import DEBUG
 
 
 def is_subparser(klass):
@@ -71,6 +71,9 @@ def main():
     parser = init_parser()
     init_subparsers(parser)
     args = parser.parse_args()
+
+    if 'factory' not in args:
+        rgs = parser.parse_args(['-h'])
 
     if not DEBUG:
         try:

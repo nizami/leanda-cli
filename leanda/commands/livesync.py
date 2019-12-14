@@ -1,9 +1,9 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from api import Api
-from filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
+from leanda.parser_helper import HandlerBase
+from leanda.api import Api
+from leanda.filelist_helper import ListHelper, LocalFiles, RemoteFiles
+from leanda.config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
 import os
 import json
 from clint.textui import colored, progress

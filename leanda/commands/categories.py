@@ -1,12 +1,12 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
-from config import CONTENTS
+from leanda.parser_helper import HandlerBase
+from leanda.endpoint_helper import EndPoint
+from leanda.config import CONTENTS
 import os
 import json
-from config import (WEB_API_URL)
-from api import Api
+from leanda.config import (WEB_API_URL)
+from leanda.api import Api
 
 
 class Categories(HandlerBase):

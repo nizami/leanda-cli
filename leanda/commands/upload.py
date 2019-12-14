@@ -1,11 +1,11 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
+from leanda.parser_helper import HandlerBase
+from leanda.endpoint_helper import EndPoint
 import os
 import json
 import yaml
-from config import UPLOAD, MACHINE_LEARNING_MODEL, CONTENTS
+from leanda.config import UPLOAD, MACHINE_LEARNING_MODEL, CONTENTS
 
 
 class Upload(HandlerBase):
