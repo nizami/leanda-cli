@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='leanda',
-    version='0.0.1',
+    version='0.0.3',
     scripts=['bin/leanda', 'bin/leanda.cmd'],
     author="ArqiSoft",
     author_email="info@arqisoft.com",

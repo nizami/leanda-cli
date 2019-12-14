@@ -2,66 +2,64 @@
 
 Leanda Command Line Interface (CLI) is intended for installation on users computers and will serve as another "client" for Leanda platform.
 
-## Requirements
-
-Docker 19.x
-
-Python 3.x (for development)
-
 ## Quickstart
 
-```bash
-git clone https://github.com/ArqiSoft/leanda-cli
-cd leanda-cli
-
-docker build -t leanda/cli:latest .
-docker-compose up -d
-docker exec -it leanda-cli /bin/bash
-```
-
-Run help command
+Install leanda-cli via pip:
 
 ```bash
-python leanda.py -h
+pip install leanda
 ```
 
-Run livesync command
+Run help command:
 
 ```bash
-python leanda.py login -u my_name -p my_password
-python leanda.py livesync -l ./leanda-sync
+leanda -h
 ```
 
-`./leanda-sync` is a mounted folder. You can change it in the `docker-compose.yml` file `volume` section.
-Other parameters like `WEB_API_URL` are located in the `environment` section.
+For the next commands you need to set the next environment variables:
+`WEB_API_URL`, `WEB_STORAGE_API_URL` and `IDENTITY_SERVER_URL`
 
-Stop docker-compose
+Login to Leanda:
 
 ```bash
-exit
-docker-compose down
+leanda login -u my_name -p my_password
+
 ```
+
+Get categories list:
+
+```bash
+leanda categories
+```
+
+Run livesync command:
+
+```bash
+leanda livesync -l ./leanda-sync-folder
+```
+
+`./leanda-sync-folder` is a local folder path.
 
 ## Commands Summary
 
 |Command| Usage|
 | ----- | ---------- |
-|`leanda.py` [`login`](#login)| Allows to login and store the update session information for an Leanda user.|
-|`leanda.py` [`whoami`](#whoami)| Check authorization and explore session data.|
-|`leanda.py` [`logout`](#logout)| Do logout. Session data is removed.|
-|`leanda.py` [`pwd`](#pwd)| Identify current Leanda working directory.|
-|`leanda.py` [`cd`](#cd)| Change Leanda's current working directory.|
-|`leanda.py` [`ls`](#ls)| Browse remote Leanda folder. |
-|`leanda.py` [`rm`](#rm)| Allows to remove file or folder. |
-|`leanda.py` [`upload`](#upload)| Allows uploading a local file into the BLOB (raw file) store.|
-|`leanda.py` [`download`](#download)| Allows to download an Leanda file.|
-|`leanda.py` [`livesync`](#livesync)| Two-way synchronization of local folder with the Leanda user's folder. |
-|`leanda.py` [`items`](#items)| Allows to list all items from Leanda using queries. |
-|`leanda.py` [`models`](#models)| Allows to list models from Leanda using queries. |
-|`leanda.py` [`recordsets`](#recordsets)| Allows to list recordsets from Leanda using queries. |
-|`leanda.py` [`train`](#train)| Allows to run Machine Learning command train. |
-|`leanda.py` [`predict`](#predict)| Allows to run Machine Learning command predict. |
-|`leanda.py` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
+|`leanda` [`login`](#login)| Allows to login and store the update session information for an Leanda user.|
+|`leanda` [`whoami`](#whoami)| Check authorization and explore session data.|
+|`leanda` [`logout`](#logout)| Do logout. Session data is removed.|
+|`leanda` [`pwd`](#pwd)| Identify current Leanda working directory.|
+|`leanda` [`cd`](#cd)| Change Leanda's current working directory.|
+|`leanda` [`ls`](#ls)| Browse remote Leanda folder. |
+|`leanda` [`rm`](#rm)| Allows to remove file or folder. |
+|`leanda` [`upload`](#upload)| Allows uploading a local file into the BLOB (raw file) store.|
+|`leanda` [`download`](#download)| Allows to download an Leanda file.|
+|`leanda` [`livesync`](#livesync)| Two-way synchronization of local folder with the Leanda user's folder. |
+|`leanda` [`items`](#items)| Allows to list all items from Leanda using queries. |
+|`leanda` [`models`](#models)| Allows to list models from Leanda using queries. |
+|`leanda` [`recordsets`](#recordsets)| Allows to list recordsets from Leanda using queries. |
+|`leanda` [`train`](#train)| Allows to run Machine Learning command train. |
+|`leanda` [`predict`](#predict)| Allows to run Machine Learning command predict. |
+|`leanda` [`categories`](#categories)| Allows to initialize category tree with basic structure. |
 
 ## login
 
@@ -78,11 +76,11 @@ Allows to login and reset session information for an Leanda user.
 Examples:
 
 ```bash
-leanda.py login -u<user-name> -p<password>
-leanda.py login --verbosity -u<user-name> -p<password>
-leanda.py login -v -u<user-name> -p<password>
-leanda.py login -vv -u<user-name> -p<password>
-leanda.py login -u<user-name> -p
+leanda login -u<user-name> -p<password>
+leanda login --verbosity -u<user-name> -p<password>
+leanda login -v -u<user-name> -p<password>
+leanda login -vv -u<user-name> -p<password>
+leanda login -u<user-name> -p
 Password:
 ```
 
@@ -99,9 +97,9 @@ Check authorization and explore session data.
 Examples:
 
 ```bash
-leanda.py whoami --verbosity
-leanda.py whoami -vv
-leanda.py whoami -vvv
+leanda whoami --verbosity
+leanda whoami -vv
+leanda whoami -vvv
 ```
 
 ## logout
@@ -115,7 +113,7 @@ No parameters
 Examples:
 
 ```bash
-leanda.py logout
+leanda logout
 ```
 
 ## pwd
@@ -131,10 +129,10 @@ Identify current Leanda working directory.
 Examples:
 
 ```bash
-leanda.py pwd
-leanda.py pwd --verbosity
-leanda.py pwd -vv
-leanda.py pwd -vvv
+leanda pwd
+leanda pwd --verbosity
+leanda pwd -vv
+leanda pwd -vvv
 ```
 
 ## ls
@@ -156,10 +154,10 @@ container - Remote Leanda user's folder or none for current working folder.
 Examples:
 
 ```bash
-leanda.py ls c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
-leanda.py ls 2e01
-leanda.py ls -p10
-leanda.py ls -s20 -2
+leanda ls c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda ls 2e01
+leanda ls -p10
+leanda ls -s20 -2
 ```
 
 ## cd
@@ -179,16 +177,16 @@ container - Remote Leanda user's folder, none for home  folder or '..' for
 Examples:
 
 ```bash
-leanda.py ls
+leanda ls
 File
     33.mol               Records(  1) Processed  c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
     combined lysomotroph Records( 55) Processed  00160000-ac12-0242-c20e-08d56e29a481
 
-leanda.py cd 33
-leanda.py cd a481
-leanda.py cd
-leanda.py cd ..
-leanda.py cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda cd 33
+leanda cd a481
+leanda cd
+leanda cd ..
+leanda cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## rm
@@ -207,9 +205,9 @@ container - Remote Leanda user's folder. Leanda user's folder can be choosed by
 Examples:
 
 ```bash
-leanda.py rm a481
-leanda.py rm abc
-leanda.py rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda rm a481
+leanda rm abc
+leanda rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## upload
@@ -233,11 +231,11 @@ container - Remote Leanda user's folder, none for working folder.
 Examples:
 
 ```bash
-leanda.py upload -p path-to-file
-leanda.py upload -p path-to-file1 -p path-to-file2 -p path-to-file3
-leanda.py upload -p path-to-file -n new-name to file 'filename'
-leanda.py upload -p path-to-file -m path-to-model.json
-leanda.py upload -p path-to-file -m path-to-model.yaml
+leanda upload -p path-to-file
+leanda upload -p path-to-file1 -p path-to-file2 -p path-to-file3
+leanda upload -p path-to-file -n new-name to file 'filename'
+leanda upload -p path-to-file -m path-to-model.json
+leanda upload -p path-to-file -m path-to-model.yaml
 ```
 
 ## download
@@ -259,9 +257,9 @@ container - Remote Leanda user's folder, none for working folder.
 Examples:
 
 ```bash
-leanda.py upload abc -o path-to-file
-leanda.py upload a481 -f -o path-to-file1
-leanda.py upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
+leanda upload abc -o path-to-file
+leanda upload a481 -f -o path-to-file1
+leanda upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
 ```
 
 ## livesync
@@ -283,9 +281,9 @@ Two-way synchronization of local folder with the Leanda user's folder. Comparisi
 Examples:
 
 ```bash
-leanda.py livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
-leanda.py livesync -l /path/to/folder -f -r 2e01 -ul
-leanda.py livesync -ur
+leanda livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
+leanda livesync -l /path/to/folder -f -r 2e01 -ul
+leanda livesync -ur
 ```
 
 ## items
@@ -309,13 +307,13 @@ Allows to list all items from Leanda using queries.
 Examples:
 
 ```bash
-leanda.py items
-leanda.py items -v
-leanda.py items -vv
-leanda.py items -n png
-leanda.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda.py items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda.py items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda items
+leanda items -v
+leanda items -vv
+leanda items -n png
+leanda items -q "SubType eq 'Model' and MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 ```
 
 ## models
@@ -325,13 +323,13 @@ Allows to list models from Leanda using queries. Same as `items`, but add preset
 Examples:
 
 ```bash
-leanda.py models
-leanda.py models -v
-leanda.py models -vv
-leanda.py items -n ada
-leanda.py models -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda.py models -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda.py models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda models
+leanda models -v
+leanda models -vv
+leanda items -n ada
+leanda models -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda models -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 
 ```
 
@@ -342,13 +340,13 @@ Allows to list recordsets from Leanda using queries. Same as `items`, but add pr
 Examples:
 
 ```bash
-leanda.py recordsets
-leanda.py recordsets -v
-leanda.py recordsets -vv
-leanda.py recordsets -n combined
-leanda.py recordsets -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda.py recordsets -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda.py recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
+leanda recordsets
+leanda recordsets -v
+leanda recordsets -vv
+leanda recordsets -n combined
+leanda recordsets -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
+leanda recordsets -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
+leanda recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
 
 ```
 
@@ -370,11 +368,11 @@ Allows to run Machine Learning command train.
 Examples:
 
 ```bash
-leanda.py train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml 
-leanda.py train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml 
-leanda.py train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml 
-leanda.py train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model.yaml 
-leanda.py train data_solu -f test5.model -m sample_files/train_sdf_model.yaml 
+leanda train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml
+leanda train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml
+leanda train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml
+leanda train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model.yaml
+leanda train data_solu -f test5.model -m sample_files/train_sdf_model.yaml
 ```
 
 ## predict
@@ -390,7 +388,7 @@ Allows to run Machine Learning command predict.
 Examples:
 
 ```bash
-leanda.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
+leanda predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
 
 ```
 
@@ -398,9 +396,16 @@ leanda.py predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 0
 
 Allows to initialize category tree with basic structure.
 
+```bash
+  -rm, --remove - Remove all categories
+  -i, --init    - Initialize categories from categories.json file data
+```
+
 Examples:
 
 ```bash
-leanda.py categories
+leanda categories #get list of categories
+leanda categories -rm
+leanda categories -i
 
 ```
