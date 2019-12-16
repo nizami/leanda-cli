@@ -201,6 +201,8 @@ class LiveSync(HandlerBase):
         result = self.api.get(url=url, stream=True)
         assert result.ok, 'Problem loading file {}'.format(path)
 
+        print('Dowloading file: ', path)
+
         result.raw.decode_content = True
         it = result.iter_content(chunk_size=1024)
         with open(path, 'wb') as f:
@@ -283,6 +285,8 @@ class LiveSync(HandlerBase):
         if self.get_first_remote_file_by_name(parent_id, filename):
             print('File "{}" already exists'.format(filename))
             return
+
+        print('Uploading file: ', local_file_path)
 
         with open(local_file_path, 'rb') as fh:
             file = {'file': (filename, fh, 'multipart/mixed')}
