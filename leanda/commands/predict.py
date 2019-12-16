@@ -1,9 +1,9 @@
 # _*_ encoding: utf-8 _*_
 
 import json
-from leanda.parser_helper import HandlerBase
-from leanda.endpoint_helper import EndPoint
-from leanda.config import CONTENTS, NODE, PREDICT
+from parser_helper import HandlerBase
+from endpoint_helper import EndPoint
+from config import CONTENTS, NODE, PREDICT
 
 
 class Predict(HandlerBase):

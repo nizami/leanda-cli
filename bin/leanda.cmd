@@ -38,7 +38,6 @@ import leanda.cli
 
 
 def main():
-    print('from leanda.cmd')
     leanda.cli.main()
     return 0
 

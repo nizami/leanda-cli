@@ -1,8 +1,8 @@
-from leanda.config import LAST_UPDATED
+from config import LAST_UPDATED
 import os
 import pickle
 from collections import defaultdict
-from leanda.endpoint_helper import EndPoint
+from endpoint_helper import EndPoint
 from collections import namedtuple
 
 LocalFiles = namedtuple('LocalFiles', 'name,   mtime')

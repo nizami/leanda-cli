@@ -1,16 +1,42 @@
 # _*_ encoding: utf-8 _*_
 
-from leanda.parser_helper import HandlerBase
-from leanda.api import Api
-from leanda.filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from leanda.config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
-import os
+from parser_helper import HandlerBase
+from api import Api
+from filelist_helper import ListHelper, LocalFiles, RemoteFiles
+from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
 import json
 from clint.textui import colored, progress
 from time import time, sleep
 from os import listdir, mkdir
-from os.path import isfile, isdir, exists, join
+from os.path import isfile, isdir, exists, join, basename
 import hashlib
+import sys
+import time
+import logging
+from watchdog.observers import Observer
+from watchdog.events import LoggingEventHandler, FileSystemEventHandler
+
+class CustomEventHandler(FileSystemEventHandler):
+    livesync: object
+
+    def __init__(self, livesync):
+        self.livesync = livesync
+
+    def on_any_event(self, event):
+        print('on_any_event', event)
+        self.livesync.sync()
+
+    def on_modified(self, event):
+        print('on_modified', event)
+
+    def on_deleted(self, event):
+        print('on_deleted', event)
+
+    def on_moved(self, event):
+        print('on_moved', event)
+
+    def on_created(self, event):
+        print('on_created', event)
 
 
 class LiveSync(HandlerBase):
@@ -69,22 +95,19 @@ class LiveSync(HandlerBase):
     api: Api
 
     def _is_local_file(self, name):
-        filename = os.path.basename(name)
-        return os.path.isfile(name) \
+        filename = basename(name)
+        return isfile(name) \
             and not (filename.startswith('.') or filename.startswith('_'))
 
     def _is_remote_file(self, rec):
         return rec['type'] == FILE
 
     def __call__(self):
-
-        assert os.path.isdir(self.folder), \
+        assert isdir(self.folder), \
             "'{folder}' is not a folder".format(folder=self.folder)
-
         self.api = Api()
-
-        self.upload_local_files(self.api.session['cwd'], self.folder)
-        self.download_remote_files(self.api.session['cwd'], self.folder)
+        # self.watch(self.folder)
+        self.sync()
         return
         # Local files
         lfiles = ListHelper(path=self.folder,
@@ -94,9 +117,9 @@ class LiveSync(HandlerBase):
         # for file in os.listdir(self.folder):
         for file in self.list_files(self.folder):
             # print('file', file)
-            path = os.path.join(self.folder, file)
+            path = path.join(self.folder, file)
             rec = LocalFiles(name=file,
-                             mtime=os.path.getmtime(path))
+                             mtime=path.getmtime(path))
             if self._is_local_file(path):
                 print(rec)
                 lfiles.list.append(rec)
@@ -136,7 +159,7 @@ class LiveSync(HandlerBase):
             rec = {'type': 'File', 'name': file.name, 'length': file.length,
                    'blob': {'id': file.bid, 'bucket': file.bucket, 'file_id': file.id,
                             'length': file.length}}
-            path = os.path.join(self.folder, file.name)
+            path = path.join(self.folder, file.name)
             try:
                 self.api.download(rec, path=path)
                 lfiles.log(path=path, file=file)
@@ -146,7 +169,7 @@ class LiveSync(HandlerBase):
         # file to upload
         print('Uploading...')
         for file in lfiles - rfiles:
-            path = os.path.join(self.folder, file.name)
+            path = path.join(self.folder, file.name)
             try:
                 print('Uploading %s' % path)
                 self.api.upload(self.api.session, path)
@@ -154,6 +177,10 @@ class LiveSync(HandlerBase):
             except Exception as e:
                 print(e)
         lfiles.store_log()
+
+    def sync(self):
+        self.upload_local_files(self.api.session['cwd'], self.folder)
+        self.download_remote_files(self.api.session['cwd'], self.folder)
 
     def download_remote_files(self, parent_id, local_folder_path):
         for item in self.get_all_remote_items(parent_id):
@@ -249,9 +276,9 @@ class LiveSync(HandlerBase):
                 raise TimeoutError()
 
     def upload_local_file(self, parent_id, local_file_path):
-        if not os.path.isfile(local_file_path):
+        if not isfile(local_file_path):
             raise IOError('File %s not found' % local_file_path)
-        filename = os.path.basename(local_file_path)
+        filename = basename(local_file_path)
 
         if self.get_first_remote_file_by_name(parent_id, filename):
             print('File "{}" already exists'.format(filename))
@@ -269,3 +296,18 @@ class LiveSync(HandlerBase):
             for chunk in iter(lambda: f.read(4096), b""):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
+
+    def watch(self, folder_path):
+        handler = CustomEventHandler(self)
+        observer = Observer()
+        observer.schedule(handler, folder_path, recursive=True)
+        observer.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
+
+
+# watchdog==0.9.0

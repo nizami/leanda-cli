@@ -1,8 +1,8 @@
 # _*_ encoding: utf-8 _*_
 
-from leanda.parser_helper import HandlerBase
-from leanda.endpoint_helper import EndPoint
-from leanda.config import ME_URL
+from parser_helper import HandlerBase
+from endpoint_helper import EndPoint
+from config import ME_URL
 
 
 class Login(HandlerBase):
@@ -106,6 +106,7 @@ class WhoAmI(HandlerBase):
         ep = EndPoint()
         ep.connect()
         resp = ep.get(url=ME_URL)
+        print('sdfwef', ME_URL)
         try:
             print("Login name: {loginName}".format(**resp.json()))
         except Exception as e:

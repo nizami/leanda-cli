@@ -2,18 +2,21 @@
 import os
 
 DEBUG = True
-WEB_API_URL = 'http://localhost/core-api/v1/api'
+WEB_API_URL = 'http://localhost:28611/api'
 WEB_STORAGE_API_URL = 'http://localhost/blob/v1/api'
 IDENTITY_SERVER_URL = 'https://id.leanda.io/auth/realms/OSDR'
 
 if 'OAUTHLIB_INSECURE_TRANSPORT' not in os.environ.keys():
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-if 'WEB_API_URL' in os.environ.keys():
-    WEB_API_URL = os.environ['WEB_API_URL']
+# if 'WEB_API_URL' in os.environ.keys():
+#     WEB_API_URL = os.environ['WEB_API_URL']
 if 'WEB_STORAGE_API_URL' in os.environ.keys():
     WEB_STORAGE_API_URL = os.environ['WEB_STORAGE_API_URL']
 if 'IDENTITY_SERVER_URL' in os.environ.keys():
     IDENTITY_SERVER_URL = os.environ['IDENTITY_SERVER_URL']
+
+print('WEBBBB', WEB_API_URL)
+
 
 TOKEN_URL = '{}/protocol/openid-connect/token'.format(IDENTITY_SERVER_URL)
 ME_URL = '%s/me' % WEB_API_URL

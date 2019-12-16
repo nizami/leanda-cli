@@ -9,7 +9,7 @@ import json
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 from requests_toolbelt import MultipartEncoder
-from leanda.config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
+from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
                     UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
 from os.path import expanduser

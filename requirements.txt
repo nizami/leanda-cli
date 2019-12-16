@@ -3,9 +3,12 @@ certifi
 chardet==3.0.4
 clint==0.5.1
 idna==2.6
-requests==2.18.4
+requests==2.21.0
 requests-oauthlib==0.8.0
 requests-toolbelt==0.8.0
 urllib3==1.22
 behave==1.2.6
 oauthlib==2.0.6
+watchdog==0.9.0
+# signalr-client==0.0.7
+signalrcore==0.7.9
