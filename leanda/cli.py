@@ -8,22 +8,22 @@ based on superclass responsible for creating an cli-interface
 """
 
 import argparse
-from parser_helper import HandlerBase
-from commands.login import Login, Logout, WhoAmI
-from commands.upload import Upload
-from commands.browse import PWD, LS, CD, RM
-from commands.livesync import LiveSync
-from commands.convert import Convert
-from commands.predict import Predict
-from commands.train import Train
-from commands.list_items import ListItems
-from commands.models import ListModels
-from commands.recordsets import ListRecordsets
-from commands.predict import Predict
-from commands.download import Download
-from commands.categories import Categories
+from .parser_helper import HandlerBase
+from .commands.login import Login, Logout, WhoAmI
+from .commands.upload import Upload
+from .commands.browse import PWD, LS, CD, RM
+from .commands.livesync import LiveSync
+from .commands.convert import Convert
+from .commands.predict import Predict
+from .commands.train import Train
+from .commands.list_items import ListItems
+from .commands.models import ListModels
+from .commands.recordsets import ListRecordsets
+from .commands.predict import Predict
+from .commands.download import Download
+from .commands.categories import Categories
 from clint.textui import colored
-from config import DEBUG
+from .config import DEBUG
 
 
 def is_subparser(klass):

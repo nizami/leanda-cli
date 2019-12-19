@@ -1,8 +1,8 @@
 # _*_ encoding: utf-8 _*_
 import json
-from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
-from config import (NODE, CONTENTS,
+from ..parser_helper import HandlerBase
+from ..endpoint_helper import EndPoint
+from ..config import (NODE, CONTENTS,
                     BROWSE_CONTENTS)
 from clint.textui import colored
 

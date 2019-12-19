@@ -1,8 +1,8 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
-from config import ME_URL
+from ..parser_helper import HandlerBase
+from ..endpoint_helper import EndPoint
+from ..config import ME_URL
 
 
 class Login(HandlerBase):

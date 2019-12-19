@@ -1,9 +1,9 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from api import Api
-from filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
+from ..parser_helper import HandlerBase
+from ..api import Api
+from ..filelist_helper import ListHelper, LocalFiles, RemoteFiles
+from ..config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
 import json
 from clint.textui import colored, progress
 from time import time, sleep

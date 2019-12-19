@@ -1,8 +1,8 @@
 # _*_ encoding: utf-8 _*_
 
-from parser_helper import HandlerBase
-from endpoint_helper import EndPoint
-from config import LIST_MODELS
+from ..parser_helper import HandlerBase
+from ..endpoint_helper import EndPoint
+from ..config import LIST_MODELS
 import json
 import yaml
 from clint.textui import colored
