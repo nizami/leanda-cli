@@ -9,7 +9,7 @@ import json
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 from requests_toolbelt import MultipartEncoder
-from .config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
+from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
                     UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
 from os.path import expanduser
@@ -29,6 +29,7 @@ class Api(object):
 
     def __init__(self):
         self.storage = '{}/leanda.data'.format(expanduser('~'))
+        self.leanda_nodes_list_path = '{}/leanda-nodes.txt'.format(expanduser('~'))
         client_id = self.API_AUTH['client_id']
         client = LegacyApplicationClient(client_id=client_id)
 

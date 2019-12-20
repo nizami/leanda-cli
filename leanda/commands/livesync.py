@@ -1,9 +1,9 @@
 # _*_ encoding: utf-8 _*_
 
-from ..parser_helper import HandlerBase
-from ..api import Api
-from ..filelist_helper import ListHelper, LocalFiles, RemoteFiles
-from ..config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD
+from parser_helper import HandlerBase
+from api import Api
+from filelist_helper import ListHelper, LocalFiles, RemoteFiles
+from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD, SIGNALR_URL
 import json
 from clint.textui import colored, progress
 from time import time, sleep
@@ -15,28 +15,28 @@ import time
 import logging
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler, FileSystemEventHandler
+from signalrcore.hub_connection_builder import HubConnectionBuilder
 
 class CustomEventHandler(FileSystemEventHandler):
-    livesync: object
+    fn: object
 
-    def __init__(self, livesync):
-        self.livesync = livesync
+    def __init__(self, fn):
+        self.fn = fn
 
     def on_any_event(self, event):
-        print('on_any_event', event)
-        self.livesync.sync()
+        fn('any_event', event)
 
     def on_modified(self, event):
-        print('on_modified', event)
+        fn('modified', event)
 
     def on_deleted(self, event):
-        print('on_deleted', event)
+        fn('deleted', event)
 
     def on_moved(self, event):
-        print('on_moved', event)
+        fn('moved', event)
 
     def on_created(self, event):
-        print('on_created', event)
+        fn('created', event)
 
 
 class LiveSync(HandlerBase):
@@ -222,11 +222,6 @@ class LiveSync(HandlerBase):
                 if folder:
                     self.upload_local_files(folder['id'], item_path)
 
-    def list_files(self, startpath):
-        for root, dirs, files in os.walk(startpath):
-            for f in files:
-                yield '{}\{}'.format(root.replace(startpath + '\\', ''), f)
-
     def get_all_remote_items(self, parent_id):
         url_params = dict(cwd=parent_id, page=1, size=100)
         url = BROWSE_CONTENTS.format(**url_params)
@@ -301,17 +296,37 @@ class LiveSync(HandlerBase):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
 
-    def watch(self, folder_path):
-        handler = CustomEventHandler(self)
+    def watch_local(self, fn):
+        handler = CustomEventHandler(fn)
         observer = Observer()
-        observer.schedule(handler, folder_path, recursive=True)
+        observer.schedule(handler, self.folder, recursive=True)
         observer.start()
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            observer.stop()
-        observer.join()
+        # try:
+        #     while True:
+        #         time.sleep(1)
+        # except KeyboardInterrupt:
+        #     observer.stop()
+        # observer.join()
 
 
-# watchdog==0.9.0
+    def watch_remote(self, fn):
+        api = Api()
+        token = api.session['token']
+        hub_connection = HubConnectionBuilder().with_url(
+            SIGNALR_URL, {"access_token_factory": lambda: token, }).build()
+
+        hub_connection.on('organizeUpdate', fn)
+        hub_connection.on('updateNotficationBar', fn)
+        hub_connection.start()
+        # message = ''
+        # while message != "exit()":
+        #     message = input(">> ")
+        # hub_connection.stop()
+
+    def check_file_exists_in_saved_list(self, file_id):
+        with open(self.api.leanda_nodes_list_path, "r+") as file:
+            for line in file:
+                if file_id in line:
+                    break
+            else:
+                file.write(file_id)
