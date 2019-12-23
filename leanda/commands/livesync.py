@@ -6,16 +6,17 @@ from filelist_helper import ListHelper, LocalFiles, RemoteFiles
 from config import BROWSE_CONTENTS, CONTENTS, DOWNLOAD, FILE, UPLOAD, SIGNALR_URL
 import json
 from clint.textui import colored, progress
-from time import time, sleep
+from time import time, sleep, ctime, localtime
 from os import listdir, mkdir
 from os.path import isfile, isdir, exists, join, basename
 import hashlib
 import sys
-import time
 import logging
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler, FileSystemEventHandler
 from signalrcore.hub_connection_builder import HubConnectionBuilder
+import os
+from datetime import datetime
 
 class CustomEventHandler(FileSystemEventHandler):
     fn: object
@@ -24,19 +25,19 @@ class CustomEventHandler(FileSystemEventHandler):
         self.fn = fn
 
     def on_any_event(self, event):
-        fn('any_event', event)
+        self.fn('any_event', event)
 
     def on_modified(self, event):
-        fn('modified', event)
+        self.fn('modified', event)
 
     def on_deleted(self, event):
-        fn('deleted', event)
+        self.fn('deleted', event)
 
     def on_moved(self, event):
-        fn('moved', event)
+        self.fn('moved', event)
 
     def on_created(self, event):
-        fn('created', event)
+        self.fn('created', event)
 
 
 class LiveSync(HandlerBase):
@@ -105,6 +106,11 @@ class LiveSync(HandlerBase):
     def __call__(self):
         assert isdir(self.folder), \
             "'{folder}' is not a folder".format(folder=self.folder)
+
+        self.local_leanda_dir = '{}/.leanda'.format(self.folder)
+        if not os.path.exists(self.local_leanda_dir):
+            os.makedirs(self.local_leanda_dir)
+
         self.api = Api()
         # self.watch(self.folder)
         self.sync()
@@ -179,15 +185,26 @@ class LiveSync(HandlerBase):
         lfiles.store_log()
 
     def sync(self):
+        storage = '{}/last_sync_time'.format(self.local_leanda_dir)
+        if exists(storage):
+            with open(storage, 'r') as f:
+                self.last_sync_time = datetime.strptime(f.read(), '%Y-%m-%d %H:%M:%S')
+        else:
+            self.last_sync_time = datetime.strptime('1970-12-23 20:17:55', '%Y-%m-%d %H:%M:%S')
+            
         self.upload_local_files(self.api.session['cwd'], self.folder)
         self.download_remote_files(self.api.session['cwd'], self.folder)
 
+        with open(storage, 'w') as f:
+            f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
     def download_remote_files(self, parent_id, local_folder_path):
         for item in self.get_all_remote_items(parent_id):
+            print(item)
             item_path = join(local_folder_path, item['name'])
             if item['type'] == 'File':
                 if not exists(item_path):
-                    rec = {'id': item['blob']['id'], 'file_id': item['id']}
+                    rec = {'id': item['blob']['id'], 'file_id': item['id'], 'modified': item['blob']['modified']}
                     self.download_remote_file(rec, item_path)
                 else:
                     print('File "{}" already exists'.format(item_path))
@@ -197,6 +214,8 @@ class LiveSync(HandlerBase):
                 self.download_remote_files(item['id'], item_path)
 
     def download_remote_file(self, record, path):
+        print(record)
+        self.check_remote_file_synced(record['id'])
         url = DOWNLOAD.format(**record)
         result = self.api.get(url=url, stream=True)
         assert result.ok, 'Problem loading file {}'.format(path)
@@ -214,6 +233,8 @@ class LiveSync(HandlerBase):
     def upload_local_files(self, parent_id, local_folder_path):
         for item in listdir(local_folder_path):
             item_path = join(local_folder_path, item)
+            if os.path.abspath(item_path) == os.path.abspath(self.local_leanda_dir):
+                continue
             if isfile(item_path):
                 self.upload_local_file(parent_id, item_path)
             else:
@@ -273,6 +294,8 @@ class LiveSync(HandlerBase):
                 raise TimeoutError()
 
     def upload_local_file(self, parent_id, local_file_path):
+        self.check_local_file_synced(local_file_path)
+
         if not isfile(local_file_path):
             raise IOError('File %s not found' % local_file_path)
         filename = basename(local_file_path)
@@ -286,7 +309,7 @@ class LiveSync(HandlerBase):
         with open(local_file_path, 'rb') as fh:
             file = {'file': (filename, fh, 'multipart/mixed')}
             url = UPLOAD.format(id=self.api.session['owner'])
-            data = {'parentId': parent_id}
+            data = {'parentId': parent_id, 'modified': ctime(os.path.getmtime(local_file_path))}
             resp = self.api.post(url, data, files=file)
 
     def get_local_file_md5(self, local_file_path):
@@ -323,10 +346,30 @@ class LiveSync(HandlerBase):
         #     message = input(">> ")
         # hub_connection.stop()
 
-    def check_file_exists_in_saved_list(self, file_id):
-        with open(self.api.leanda_nodes_list_path, "r+") as file:
-            for line in file:
-                if file_id in line:
-                    break
-            else:
-                file.write(file_id)
+    def check_remote_file_synced(self, record):
+        storage = '{}/remote_files'.format(self.local_leanda_dir)
+        if not exists(storage):
+            with open(storage, 'w') as f:
+                f.write('')
+
+        with open(storage, "r+", encoding="utf-8") as f:
+            for line in f:
+                [modified, file_id] = line.split('|')
+                if file_id.strip() == record['file_id']:
+                    return True
+            f.write('{}|{}\n'.format(record['modified'], record['file_id']))
+        return False
+
+    def check_local_file_synced(self, file_path):
+        storage = '{}/local_files'.format(self.local_leanda_dir)
+        if not exists(storage):
+            with open(storage, 'w') as f:
+                f.write('')
+
+        with open(storage, "r+", encoding="utf-8") as f:
+            for line in f:
+                [modified, path] = line.split('|')
+                if path.strip() == os.path.abspath(file_path):
+                    return True
+            f.write('{}|{}\n'.format(ctime(os.path.getmtime(file_path)), os.path.abspath(file_path)))
+        return False

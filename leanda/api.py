@@ -13,6 +13,7 @@ from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
                     UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
 from os.path import expanduser, exists
+from time import time
 
 class Api(object):
     API_AUTH = {
@@ -102,6 +103,7 @@ class Api(object):
         return resp
 
     def post(self, url, data, files=None):
+        print('----post', data)
         if files:
             fields = list(data.items())
             files = list(files.items())
@@ -152,24 +154,22 @@ class Api(object):
 
     def download(self, record, path):
         assert record['type'] == FILE, 'Not a file'
-
-        file_name = path
-        assert record['blob'], 'No blob data for {}'.format(file_name)
+        assert record['blob'], 'No blob data for {}'.format(path)
 
         length = record['blob']['length']
         url = DOWNLOAD.format(**record['blob'])
         result = self.get(url=url, stream=True)
-        assert result.ok, 'Problem loading file {}'.format(file_name)
+        assert result.ok, 'Problem loading file {}'.format(path)
 
         total_length = length
         result.raw.decode_content = True
         it = result.iter_content(chunk_size=1024)
-        label = "{:20.20}".format(file_name)
+        label = "{:20.20}".format(path)
         count = total_length // 1024 + 1
         bar = progress.Bar(label=label, width=32,
                            empty_char='.', filled_char='>',
                            expected_size=count, every=3)
-        with open(file_name, 'wb') as f:
+        with open(path, 'wb') as f:
             with bar:
                 for i, item in enumerate(it):
                     bar.show(i + 1)
@@ -185,9 +185,8 @@ class Api(object):
         file = {'file': (filename, fh, 'multipart/mixed')}
 
         url = UPLOAD.format(id=session['owner'])
-        data = {'parentId': session['cwd'], }
+        data = {'parentId': session['cwd'], 'modified': time.ctime(os.path.getmtime(file)) }
         resp = self.post(url, data, files=file)
-        print(resp)
 
     def upload_file(self, session, parent_id, file_path):
         if not os.path.isfile(file_path):
@@ -197,9 +196,8 @@ class Api(object):
         file = {'file': (file_path, fh, 'multipart/mixed')}
 
         url = UPLOAD.format(id=session['owner'])
-        data = {'parentId': parent_id }
+        data = {'parentId': parent_id, 'modified': time.ctime(os.path.getmtime(file)) }
         resp = self.post(url, data, files=file)
-        print('upload_file', resp)
 
     def remove(self, record):
         url = REMOVE
