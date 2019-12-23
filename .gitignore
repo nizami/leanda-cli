@@ -1,6 +1,5 @@
 __pycache__
 *.pyc
-leanda.data
 build
 dist
 leanda.egg-info

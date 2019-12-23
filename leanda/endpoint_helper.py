@@ -29,7 +29,10 @@ class EndPoint(object):
     }
 
     def __init__(self):
-        self.storage = '{}/leanda.data'.format(expanduser('~'))
+        leanda_dir = '{}/.leanda'.format(expanduser('~'))
+        if not os.path.exists(leanda_dir):
+            os.makedirs(leanda_dir)
+        self.storage = '{}/auth'.format(leanda_dir)
         client_id = self.API_AUTH['client_id']
         client = LegacyApplicationClient(client_id=client_id)
 

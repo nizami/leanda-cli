@@ -12,7 +12,7 @@ from requests_toolbelt import MultipartEncoder
 from config import (ME_URL, TOKEN_URL, DOWNLOAD, FILE, REMOVE,
                     UPLOAD, ID_PATTERN, NODE, REMOVE_DATA, NODE, WEB_API_URL)
 from clint.textui import progress
-from os.path import expanduser
+from os.path import expanduser, exists
 
 class Api(object):
     API_AUTH = {
@@ -28,8 +28,11 @@ class Api(object):
     session = None
 
     def __init__(self):
-        self.storage = '{}/leanda.data'.format(expanduser('~'))
-        self.leanda_nodes_list_path = '{}/leanda-nodes.txt'.format(expanduser('~'))
+        self.leanda_dir = '{}/.leanda'.format(expanduser('~'))
+        if not os.path.exists(self.leanda_dir):
+            os.makedirs(self.leanda_dir)
+
+        self.storage = '{}/auth'.format(self.leanda_dir)
         client_id = self.API_AUTH['client_id']
         client = LegacyApplicationClient(client_id=client_id)
 

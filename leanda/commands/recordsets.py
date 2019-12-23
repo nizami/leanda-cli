@@ -1,4 +1,4 @@
-from list_items import ListItems
+from .list_items import ListItems
 import re
 
 patt = re.compile(r'(name:\s+)(.+)?(\s)')

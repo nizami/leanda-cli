@@ -1,25 +1,29 @@
 # _*_ encoding: utf-8 _*_
 import os
+from os.path import exists, expanduser
+import pickle
+
+def get_or_update_config(dict = None):
+    config = {}
+    leanda_dir = '{}/.leanda'.format(expanduser('~'))
+    config_path = '{}/config'.format(leanda_dir)
+    if exists(config_path):
+        with open(config_path, "rb") as f:
+            config = pickle.load(f)
+            if dict: config.update(dict)
+    with open(config_path, "wb") as f:
+        pickle.dump(config, f)
+    return config
 
 DEBUG = True
-WEB_API_URL = 'http://localhost:28611/api'
-WEB_STORAGE_API_URL = 'http://localhost/blob/v1/api'
-WEB_SOCKET_URL = 'ws://localhost/core-api/v1'
-IDENTITY_SERVER_URL = 'https://id.leanda.io/auth/realms/OSDR'
-
 if 'OAUTHLIB_INSECURE_TRANSPORT' not in os.environ.keys():
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-if 'WEB_API_URL' in os.environ.keys():
-    WEB_API_URL = os.environ['WEB_API_URL']
-if 'WEB_SOCKET_URL' in os.environ.keys():
-    WEB_SOCKET_URL = os.environ['WEB_SOCKET_URL']
-if 'WEB_STORAGE_API_URL' in os.environ.keys():
-    WEB_STORAGE_API_URL = os.environ['WEB_STORAGE_API_URL']
-if 'IDENTITY_SERVER_URL' in os.environ.keys():
-    IDENTITY_SERVER_URL = os.environ['IDENTITY_SERVER_URL']
 
-print('WEBBBB', WEB_API_URL)
-
+config = get_or_update_config()
+WEB_API_URL = config['WEB_API_URL'] or 'http://localhost:28611/api'
+WEB_STORAGE_API_URL = config['WEB_STORAGE_API_URL'] or 'http://localhost/blob/v1/api'
+WEB_SOCKET_URL = config['WEB_SOCKET_URL'] or 'ws://localhost/core-api/v1'
+IDENTITY_SERVER_URL = config['IDENTITY_SERVER_URL'] or 'https://id.leanda.io/auth/realms/OSDR'
 
 TOKEN_URL = '{}/protocol/openid-connect/token'.format(IDENTITY_SERVER_URL)
 ME_URL = '%s/me' % WEB_API_URL
@@ -54,5 +58,3 @@ REMOVE_DATA = '''
                 "op": "add",
               }]
               '''
-
-
