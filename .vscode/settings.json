@@ -1,0 +1,5 @@
+{
+  "python.pythonPath": "venv/bin/python3.8",
+  "files.autoSave": "afterDelay",
+  "editor.formatOnSave": true
+}

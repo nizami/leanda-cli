@@ -1,0 +1,8 @@
+{
+  "web_core_api_url": "http://api.leanda.io/core-api/v1/api",
+  "web_blob_api_url": "http://api.leanda.io/blob/v1/api",
+  "web_socket_url": "ws://localhost/core-api/v1",
+  "identity_server_url": "https://id.leanda.io/auth/realms/OSDR",
+  "file_upload_limit": 50,
+  "file_download_limit": 50
+}
