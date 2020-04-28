@@ -9,7 +9,7 @@ from colorama import Fore
 from tqdm import tqdm
 from pathlib import Path
 from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler, FileSystemEventHandler
+from watchdog.events import LoggingEventHandler, FileSystemEventHandler, FileSystemEvent
 
 from leanda.config import config
 from leanda.session import session
@@ -43,6 +43,11 @@ def upload_file(file_path, remote_folder_id=None):
             pbar.clear()
             return
 
+        basename = path.basename(file_path)
+        nodes_with_the_same_name = nodes.get_all_nodes(remote_folder_id)
+        remove_after_upload = filter(
+            lambda x: x['name'] == basename, nodes_with_the_same_name)
+
         if file_size < 1024 * 1024 * 1:  # 1 MB
             res = http.upload_small_file(url, file_path, data)
         else:
@@ -55,6 +60,8 @@ def upload_file(file_path, remote_folder_id=None):
             pbar.bar_format = '%s{desc}Failed when upload. Reason:%s%s' % (
                 Fore.RED, res.reason, Fore.RESET)
         pbar.clear()
+        for node in remove_after_upload:
+            nodes.remove(node['id'])
         return res
 
 
@@ -155,10 +162,11 @@ def download_folder(folder_node, local_folder=None):
             download_file(remote_node, local_folder)
 
 
-def sync(local_directory, remote_folder):
+def sync(local_directory, remote_folder_node):
     print_green('Sync...')
     try:
-        observer = watch_local(local_directory, lambda x, e: print(x, e))
+        observer = watch_local(
+            local_directory, remote_folder_node, lambda x, e: print(x, e))
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
@@ -169,29 +177,40 @@ def sync(local_directory, remote_folder):
 class CustomEventHandler(FileSystemEventHandler):
     fn: object
 
-    def __init__(self, fn):
+    def __init__(self, local_directory, remote_folder_node, fn):
+        self.local_directory = local_directory
+        self.remote_folder_node = remote_folder_node
         self.fn = fn
 
-    def on_any_event(self, event):
-        self.fn('any_event', event)
+    def on_any_event(self, event: FileSystemEvent):
+        pass
 
-    def on_modified(self, event):
-        self.fn('modified', event)
+    def on_modified(self, event: FileSystemEvent):
+        # path = self.normalize_path(event)
+        # self.fn('modified', path)
+        pass
 
-    def on_deleted(self, event):
-        self.fn('deleted', event)
-        # node = nodes.
-        # nodes.remove()
+    def on_deleted(self, event: FileSystemEvent):
+        path = self.normalize_path(event)
+        self.fn('deleted', path)
+        # node = nodes.get_node_by_location(eve)
+        # nodes.remove(node['id'])
 
-    def on_moved(self, event):
-        self.fn('moved', event)
+    def on_moved(self, event: FileSystemEvent):
+        path = self.normalize_path(event)
+        self.fn('moved', path)
 
-    def on_created(self, event):
-        self.fn('created', event)
+    def on_created(self, event: FileSystemEvent):
+        path = self.normalize_path(event)
+        self.fn('created', path)
+        upload([event.src_path], self.remote_folder_node['id'])
+
+    def normalize_path(self, event: FileSystemEvent):
+        return event.src_path.replace(self.local_directory + '/', '').replace(self.local_directory, '')
 
 
-def watch_local(local_directory, fn):
-    handler = CustomEventHandler(fn)
+def watch_local(local_directory, remote_folder_node, fn):
+    handler = CustomEventHandler(local_directory, remote_folder_node, fn)
     observer = Observer()
     observer.schedule(handler, local_directory, recursive=True)
     observer.start()

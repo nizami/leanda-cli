@@ -1,4 +1,5 @@
 import os
+from os import path
 import sys
 import click
 import pkg_resources
@@ -113,6 +114,9 @@ def download(remote, local):
 @click.option('-l', '--local', help='Local directory path. Current directory if ommited.', default=None)
 def sync(watch, remote, local):
     """Sync local direcory with remote folder."""
-    remote = nodes.get_node_by_id(remote or session.cwd)
-    local = local or os.getcwd()
+    remote = nodes.get_node_by_id(
+        remote or session.cwd) or nodes.get_node_by_id(session.owner)
+    local = path.abspath(local or os.getcwd())
+    print('Local folder is "%s"' % local)
+    print('Remote folder is "%s"' % nodes.get_location(remote))
     blobs.sync(local, remote)
