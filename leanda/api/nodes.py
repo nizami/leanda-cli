@@ -50,7 +50,7 @@ def get_all_nodes(remote_folder_id=None):
     pages = json.loads(res.headers['X-Pagination'])
     items = res.json()
     while pages['nextPageLink']:
-        res = get(pages['nextPageLink'].replace(
+        res = http.get(pages['nextPageLink'].replace(
             'http://api.leanda.io/api', config.web_core_api_url))
         if 'X-Pagination' not in res.headers:
             break
@@ -137,6 +137,9 @@ def set_cwd(location):
 
     folder_node = get_node_by_location(location)
 
+    if not folder_node:
+        return
+
     if folder_node['type'] not in ['Folder', 'User']:
         print('Node type is not a folder')
         return
@@ -192,6 +195,9 @@ def get_node_by_location(location: str, prev_node=None):
     location_parts = list(filter(lambda x: x, location.split('/')))
     if len(location_parts) > 1:
         node = get_node_by_location(location_parts[0], prev_node)
+        if not node:
+            util.print_red('Node not found "%s"' % location)
+            return
         return get_node_by_location('/'.join(location_parts[1:]), node)
     else:
         location = location_parts[0]
@@ -200,9 +206,10 @@ def get_node_by_location(location: str, prev_node=None):
         breadcrumbs = get_node_breadcrumbs(prev_node['id'])
         node_id = breadcrumbs and breadcrumbs[0].get('Id') or session.owner
         node = get_node_by_id(node_id)
+        print('node_id', node_id)
 
         if not node:
-            util.print_red('Node not found' % location)
+            util.print_red('Node not found "%s"')
             return
         return node
 
