@@ -198,8 +198,7 @@ def get_node_by_location(location: str, prev_node=None):
 
     if location == '..':
         breadcrumbs = get_node_breadcrumbs(prev_node['id'])
-        node_id = breadcrumbs and breadcrumbs[0].get(
-            'ParentId') or session.owner
+        node_id = breadcrumbs and breadcrumbs[0].get('Id') or session.owner
         node = get_node_by_id(node_id)
 
         if not node:
