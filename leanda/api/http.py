@@ -8,15 +8,19 @@ from tqdm import tqdm
 import mimetypes
 from colorama import Fore
 import sys
+import magic
 
 from leanda.session import session
 from leanda.config import config
 from leanda.util import print_green, print_red, truncate_string_middle
+from pprint import pprint
+
 
 def exit_by_unauthorized_reason(res):
     if res.status_code == 401:
         print_red('Please login and retry!')
         sys.exit()
+
 
 def fetch(method, url, data=None, headers=None):
     base_headers = {
@@ -52,14 +56,17 @@ def patch(url, data): return fetch(
     'patch', url, data=data)
 
 
+def get_mime_type(file_path):
+    return mimetypes.guess_type(file_path)[0] or magic.from_file(file_path, mime=True)
+
+
 def upload_large_file(url, file_path, data, chunk_callback=None):
     if not path.isfile(file_path):
         print(f'File {file_path} not found')
         return
-    mime_type = mimetypes.guess_type(file_path)[0]
     file = open(file_path, 'rb')
     base_name = path.basename(file_path)
-    data.update({'file': (base_name, file, mime_type)})
+    data.update({'file': (base_name, file, get_mime_type(file_path))})
     encoder = MultipartEncoder(data)
 
     prev_bytes_read = 0
@@ -85,21 +92,24 @@ def upload_small_file(url, file_path, data):
     if not path.isfile(file_path):
         print(f'File {file_path} not found')
         return
-    with open(file_path, 'rb') as f:
-        fields = [
-            ('file', (path.basename(file_path), f, 'multipart/mixed'))]
-        fields.extend(data.items())
-        encoded_data = MultipartEncoder(fields=fields)
-        headers = {
-            'Accept': '*/*',
-            'Content-Type': encoded_data.content_type,
-            'Authorization': session.token
+
+    encoded_data = MultipartEncoder(
+        fields={
+            **data,
+            'file': (path.basename(file_path),
+                     open(file_path, 'rb'), get_mime_type(file_path)),
         }
-        res = requests.post(url, headers=headers, data=encoded_data)
-        if res.status_code == 401:
-            print_red('Please login and retry!')
-            sys.exit()
-        return res
+    )
+    headers = {
+        'Accept': '*/*',
+        'Content-Type': encoded_data.content_type,
+        'Authorization': session.token
+    }
+    res = requests.post(url, headers=headers, data=encoded_data)
+    if res.status_code == 401:
+        print_red('Please login and retry!')
+        sys.exit()
+    return res
 
 
 def download_large_file(url, file_path, chunk_callback=None):

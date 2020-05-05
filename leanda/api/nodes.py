@@ -27,44 +27,47 @@ def get_node_breadcrumbs(node_id):
         util.print_red('Node with ID {%s} not found' % node_id)
 
 
-def get_nodes_by_id_or_name(node_id_or_name, remote_folder_id=None):
+def get_nodes_by_id_or_name(node_id_or_name, remote_folder_id=session.cwd):
     if util.is_valid_uuid4(node_id_or_name):
         return [get_node_by_id(node_id_or_name)]
     else:
-        cwd_nodes = get_all_nodes(remote_folder_id)
+        cwd_nodes = get_nodes(remote_folder_id)
         found_nodes = filter(lambda x: x['name'] == node_id_or_name, cwd_nodes)
         return list(found_nodes)
 
 
-def get_nodes(remote_folder_id=None, page=1, size=100):
-    url = f'{config.web_core_api_url}/nodes/{remote_folder_id or session.cwd}/nodes?pageSize={size}&pageNumber={page}'
-    return http.get(url).json()
+# def get_nodes(remote_folder_id=None, page=1, size=100):
+#     url = f'{config.web_core_api_url}/nodes/{remote_folder_id or session.cwd}/nodes?pageSize={size}&pageNumber={page}'
+#     return http.get(url).json()
 
 
-def get_all_nodes(remote_folder_id=None):
-    url = f'{config.web_core_api_url}/nodes/{remote_folder_id or session.cwd}/nodes?pageSize=100&pageNumber=1'
+def get_nodes(remote_folder_id=session.cwd):
+    url = f'{config.web_core_api_url}/nodes/{remote_folder_id}/nodes?pageSize=100&pageNumber=1'
     res = http.get(url)
     if res.status_code != 200:
         util.print_red("Couldn't get nodes")
         return
     pages = json.loads(res.headers['X-Pagination'])
-    items = res.json()
+    yield from res.json()
     while pages['nextPageLink']:
         res = http.get(pages['nextPageLink'].replace(
             'http://api.leanda.io/api', config.web_core_api_url))
         if 'X-Pagination' not in res.headers:
             break
         pages = json.loads(res.headers['X-Pagination'])
-        items += res.json()
-    return items
+        yield from res.json()
 
 
 def get_all_folders(remote_folder_id=None):
-    return list(filter(lambda x: x['type'] == 'Folder', get_all_nodes(remote_folder_id)))
+    for item in get_nodes(remote_folder_id):
+        if item['type'] == 'Folder':
+            yield item
 
 
 def get_all_files(remote_folder_id=None):
-    return list(filter(lambda x: x['type'] == 'File', get_all_nodes(remote_folder_id)))
+    for item in get_nodes(remote_folder_id):
+        if item['type'] == 'File':
+            yield item
 
 
 def get_first_folder_by_name(name, remote_folder_id=None):
@@ -98,8 +101,8 @@ def rename(node_id, new_name):
     http.patch(url, json.dumps(data))
 
 
-def remove(node_name_or_id):
-    cwd_nodes = get_nodes_by_id_or_name(node_name_or_id)
+def remove(node_name_or_id, remote_folder_id=session.cwd):
+    cwd_nodes = get_nodes_by_id_or_name(node_name_or_id, remote_folder_id)
     if not len(cwd_nodes):
         print('No nodes to remove')
         return
@@ -132,6 +135,16 @@ def create_folder(name, remote_folder_id=None):
         util.print_red('Cannot create remote folder')
 
 
+def create_location_if_not_exists(location, remote_folder_id=session.cwd):
+    for location_part in list(filter(lambda x: x, location.split('/'))):
+        node = get_first_folder_by_name(location_part, remote_folder_id)
+        if node:
+            remote_folder_id = node['id']
+        else:
+            remote_folder_id = create_folder(location_part, remote_folder_id)
+    return remote_folder_id
+
+
 def set_cwd(location):
     """ Location can be ID or remote folder name"""
 
@@ -153,7 +166,7 @@ def set_cwd(location):
 
 
 def print_cwd_nodes(show_id):
-    cwd_nodes = get_all_nodes()
+    cwd_nodes = get_nodes()
     if show_id:
         for node in cwd_nodes:
             name = util.truncate_string_middle(node['name'], 30).ljust(30, ' ')
