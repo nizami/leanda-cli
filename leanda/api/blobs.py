@@ -224,7 +224,6 @@ def sync_upload(local_directory, remote_folder_id, skip_files=False):
                 f.write(f'{value.strftime(timestamp_fmt)}{delimeter}{key}\n')
         break
 
-
 def sync(local_directory, remote_folder_node):
     print_green('Sync...')
     sync_upload(local_directory, remote_folder_node['id'])

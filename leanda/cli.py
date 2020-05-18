@@ -13,17 +13,12 @@ from leanda.session import session
 @click.group(invoke_without_command=True, chain=True)
 @click.option('--debug', is_flag=True, help='Enables debug mode.')
 @click.option('-v', '--version', is_flag=True, help='Show Leanda CLI version.')
-@click.option('--dev/--local', default=True, help='Show Leanda CLI version.')
-def cli(debug, version, dev):
+def cli(debug, version):
     """A leanda command line interface."""
     if debug:
         click.echo(f'Debug mode is {"on" if debug else "off"}')
     if version:
         click.echo(f'v{pkg_resources.require("Leanda")[0].version}')
-    if dev:
-        config.config = config.dev_config
-    else:
-        config.config = config.local_config
 
 
 @cli.command()
