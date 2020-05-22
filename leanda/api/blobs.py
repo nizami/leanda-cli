@@ -1,9 +1,10 @@
-from os import path, walk
 import os
-from time import ctime
-from requests_toolbelt import MultipartEncoder
 import requests
 import time
+import logging
+from requests_toolbelt import MultipartEncoder
+from time import ctime
+from os import path, walk
 from glob import glob
 from colorama import Fore
 from tqdm import tqdm
@@ -11,11 +12,12 @@ from pathlib import Path
 from watchdog.observers import Observer
 from watchdog import events
 from datetime import datetime
+from signalrcore.hub_connection_builder import HubConnectionBuilder
 
+from leanda import util
 from leanda.config import config
 from leanda.session import session
 from leanda.api import http, nodes
-from leanda import util
 from leanda.util import print_green, print_red
 
 
@@ -224,7 +226,12 @@ def sync_upload(local_directory, remote_folder_id, skip_files=False):
                 f.write(f'{value.strftime(timestamp_fmt)}{delimeter}{key}\n')
         break
 
+
 def sync(local_directory, remote_folder_node):
+    watch_remote()
+    while True:
+        time.sleep(1)
+    return
     print_green('Sync...')
     sync_upload(local_directory, remote_folder_node['id'])
     # return
@@ -272,22 +279,22 @@ class CustomEventHandler(events.FileSystemEventHandler):
         src_path = self.normalize_path(event)
         self.fn('created', src_path)
         return
-        if event.is_directory:
-            nodes.create_location_if_not_exists(src_path)
-        else:
-            path_parts = list(filter(lambda x: x, src_path.split('/')))
-            src_path = path.join(self.local_directory, src_path)
-            if len(path_parts) == 1:
-                folder_node_id = self.remote_folder_node['id']
-            else:
-                folder_node = nodes.get_node_by_location(
-                    '/'.join(path_parts[0:-1]))
-                if folder_node:
-                    folder_node_id = folder_node['id']
-                else:
-                    folder_node_id = nodes.create_location_if_not_exists(
-                        '/'.join(path_parts[0:-1]), self.remote_folder_node['id'])
-            upload([src_path], folder_node_id)
+        # if event.is_directory:
+        #     nodes.create_location_if_not_exists(src_path)
+        # else:
+        #     path_parts = list(filter(lambda x: x, src_path.split('/')))
+        #     src_path = path.join(self.local_directory, src_path)
+        #     if len(path_parts) == 1:
+        #         folder_node_id = self.remote_folder_node['id']
+        #     else:
+        #         folder_node = nodes.get_node_by_location(
+        #             '/'.join(path_parts[0:-1]))
+        #         if folder_node:
+        #             folder_node_id = folder_node['id']
+        #         else:
+        #             folder_node_id = nodes.create_location_if_not_exists(
+        #                 '/'.join(path_parts[0:-1]), self.remote_folder_node['id'])
+        #     upload([src_path], folder_node_id)
         # upload([event.src_path], self.remote_folder_node['id'])
 
     def normalize_path(self, event:  events.FileSystemEvent):
@@ -300,3 +307,25 @@ def watch_local(local_directory, remote_folder_node, fn):
     observer.schedule(handler, local_directory, recursive=True)
     observer.start()
     return observer
+
+
+def watch_remote():
+    hub_connection = HubConnectionBuilder() \
+        .with_url(config.web_socket_url,
+                  options={
+                      'access_token_factory': lambda: session.token.replace('bearer ', ''),
+                      'headers': {
+                          'Authorization': session.token
+                      }
+                  }).configure_logging(logging.ERROR).with_automatic_reconnect({
+                      'type': 'raw',
+                      'keep_alive_interval': 10,
+                      'reconnect_interval': 5,
+                      'max_attempts': 5
+                  }).build()
+
+    hub_connection.on_open(lambda: print("++++connection opened"))
+    hub_connection.on_close(lambda: print("++++connection closed"))
+    hub_connection.on("organizeUpdate", print)
+    hub_connection.on("updateNotficationBar", print)
+    hub_connection.start()

@@ -6,3 +6,4 @@ tqdm==4.45.0
 colorama==0.4.3
 watchdog==0.10.2
 python-magic==0.4.15
+signalrcore==0.8.4
