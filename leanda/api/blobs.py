@@ -228,10 +228,10 @@ def sync_upload(local_directory, remote_folder_id, skip_files=False):
 
 
 def sync(local_directory, remote_folder_node):
-    watch_remote()
-    while True:
-        time.sleep(1)
-    return
+    # watch_remote() 
+    # while True:
+    #     time.sleep(1)
+    # return
     print_green('Sync...')
     sync_upload(local_directory, remote_folder_node['id'])
     # return
