@@ -13,11 +13,16 @@ pip install leanda
 Run help command:
 
 ```bash
-leanda -h
+leanda --help
 ```
 
-For the next commands you need to set the next environment variables:
-`web_core_api_url`, `web_blob_api_url` and `IDENTITY_SERVER_URL`
+For the next commands you need to set the next environment variables or will set for dev env if ommited:
+
+`LEANDA_WEB_CORE_API_URL`
+
+`LEANDA_WEB_BLOB_API_URL`
+
+`LEANDA_IDENTITY_SERVER_URL`
 
 Login to Leanda:
 
@@ -408,4 +413,34 @@ leanda categories #get list of categories
 leanda categories -rm
 leanda categories -i
 
+```
+
+## Development
+
+### Install virtualenv
+
+```bash
+pip install virtualenv --user
+```
+
+### Create virtual environment
+
+```bash
+virtualenv venv
+```
+
+### Activate virtualenv
+
+```bash
+# on Mac OS X or Linux
+. venv/bin/activate
+
+# on Windows
+venv\scripts\activate
+```
+
+### Install package
+
+```bash
+pip install --editable .
 ```
