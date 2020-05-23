@@ -1,9 +1,9 @@
-# for i in $(pip list -o | awk 'NR > 2 {print $1}'); do pip install -U $i; done && pip freeze > requirements.txt
 autopep8==1.5.2
 certifi==2020.4.5.1
 chardet==3.0.4
 click==7.1.2
 colorama==0.4.3
+humanfriendly==8.2
 idna==2.9
 oauthlib==3.1.0
 pathtools==0.1.2

@@ -1,21 +1,26 @@
-from os import path
 import json
+import os
+import humanfriendly
+
+from os import path
+from dotenv import load_dotenv
+from pathlib import Path
+
+env_path = Path('.') / 'environments/dev.env'
+load_dotenv(dotenv_path=env_path)
 
 
 class Config:
-    web_core_api_url: str
-    web_blob_api_url: str
-    web_socket_url: str
-    identity_server_url: str
-    file_upload_limit: int
-    file_download_limit: int
-
-    def __init__(self, config_path):
-        config_path = path.join(path.abspath(
-            path.dirname(__file__)), config_path)
-
-        with open(config_path, 'r') as f:
-            self.__dict__ = json.load(f)
+    web_core_api_url = os.getenv("LEANDA_WEB_CORE_API_URL")
+    web_blob_api_url = os.getenv("LEANDA_WEB_BLOB_API_URL")
+    web_socket_url = os.getenv("LEANDA_WEB_SOCKET_URL")
+    identity_server_url = os.getenv("LEANDA_IDENTITY_SERVER_URL")
+    file_upload_limit = os.getenv("LEANDA_FILE_UPLOAD_LIMIT")
+    file_upload_limit_int = humanfriendly.parse_size(
+        os.getenv("LEANDA_FILE_UPLOAD_LIMIT") or '50MB', binary=True)
+    file_download_limit = os.getenv("LEANDA_FILE_DOWNLOAD_LIMIT")
+    file_download_limit_int = humanfriendly.parse_size(
+        os.getenv("LEANDA_FILE_DOWNLOAD_LIMIT") or '50MB', binary=True)
 
 
-config = Config('./config.dev.json')
+config = Config()
