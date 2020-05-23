@@ -18,4 +18,4 @@ class Config:
             self.__dict__ = json.load(f)
 
 
-config = Config('./config.local.json')
+config = Config('./config.dev.json')
