@@ -45,9 +45,9 @@ def upload_file(file_path, remote_folder_id=None):
         desc = desc.ljust(truncate_length, ' ')
         pbar.set_description(desc)
 
-        if file_size > 1024 * 1024 * config.file_download_limit:
-            pbar.bar_format = '%s{desc}Skipped (larger than %sMB)%s' % (
-                Fore.YELLOW, config.file_download_limit, Fore.RESET)
+        if file_size > config.file_upload_limit_int:
+            pbar.bar_format = '%s{desc}Skipped (larger than %s)%s' % (
+                Fore.YELLOW, config.file_upload_limit, Fore.RESET)
             pbar.clear()
             return
 
@@ -130,8 +130,8 @@ def download_file(file_node, local_folder=None):
         pbar.set_description(desc)
 
         file_path = path.join(local_folder, file_node['name'])
-        if blob_length > 1024 * 1024 * config.file_download_limit:
-            pbar.bar_format = '%s{desc}Skipped (larger than %sMB)%s' % (
+        if blob_length > config.file_download_limit_int:
+            pbar.bar_format = '%s{desc}Skipped (larger than %s)%s' % (
                 Fore.YELLOW, config.file_download_limit, Fore.RESET)
             pbar.clear()
             return
@@ -228,7 +228,7 @@ def sync_upload(local_directory, remote_folder_id, skip_files=False):
 
 
 def sync(local_directory, remote_folder_node):
-    # watch_remote() 
+    # watch_remote()
     # while True:
     #     time.sleep(1)
     # return
