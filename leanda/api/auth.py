@@ -1,9 +1,11 @@
 import json
+import logging
 import requests
 
 from leanda.config import config
-from leanda.util import print_green
 from leanda.session import session
+
+logger = logging.getLogger('auth')
 
 
 def login(username, password):
@@ -12,7 +14,11 @@ def login(username, password):
     data = {'grant_type': 'password',
             'client_id': 'leanda_cli',
             'username': username, 'password': password, }
-    res = requests.post(token_url, data=data)
+    try:
+        res = requests.post(token_url, data=data)
+    except requests.exceptions.ConnectionError as err:
+        logger.exception(err)
+        exit()
     assert res.ok, 'Authorization Error'
 
     token = '{token_type} {access_token}'.format(**res.json())
@@ -26,5 +32,5 @@ def login(username, password):
     if not session.token:
         info.update({'cwd': owner, 'owner': owner})
     session.update(info)
-    print_green('Logged in as {firstName} {lastName}'.format(**res.json()))
+    logger.info('Logged in as {firstName} {lastName}'.format(**res.json()))
     return res.json()

@@ -18,7 +18,8 @@ from leanda import util
 from leanda.config import config
 from leanda.session import session
 from leanda.api import http, nodes
-from leanda.util import print_green, print_red
+
+logger = logging.getLogger('blobs')
 
 
 def get_info(blob_id):
@@ -86,7 +87,7 @@ def upload_directories(local_folders, remote_folder_id=None):
         folder_path = path.abspath(folder_path)
         id = nodes.create_folder(path.basename(folder_path), remote_folder_id)
         if not id:
-            print_red('Couldn\'t create folder with ID {%s}' % id)
+            logger.error('Couldn\'t create folder with ID {%s}' % id)
             continue
         for (dirpath, dirnames, filenames) in walk(folder_path):
             local_files = map(lambda x: path.join(
@@ -232,7 +233,7 @@ def sync(local_directory, remote_folder_node):
     # while True:
     #     time.sleep(1)
     # return
-    print_green('Sync...')
+    logger.info('Sync...')
     sync_upload(local_directory, remote_folder_node['id'])
     # return
     # upload_files(list(local_files), id)
@@ -260,45 +261,6 @@ class CustomEventHandler(events.FileSystemEventHandler):
     def on_any_event(self, event: events.FileSystemEvent):
         if not event.src_path.endswith('.leanda-sync'):
             sync_upload(self.local_directory, self.remote_folder_node['id'])
-
-    def on_modified(self, event: events.FileSystemEvent):
-        src_path = self.normalize_path(event)
-        # self.fn('modified', path)
-
-    def on_deleted(self, event: events.FileSystemEvent):
-        src_path = self.normalize_path(event)
-        self.fn('deleted', path)
-        # node = nodes.get_node_by_location(eve)
-        # nodes.remove(node['id'])
-
-    def on_moved(self, event: events.FileSystemEvent):
-        src_path = self.normalize_path(event)
-        self.fn('moved', type(event))
-
-    def on_created(self, event: events.FileSystemEvent):
-        src_path = self.normalize_path(event)
-        self.fn('created', src_path)
-        return
-        # if event.is_directory:
-        #     nodes.create_location_if_not_exists(src_path)
-        # else:
-        #     path_parts = list(filter(lambda x: x, src_path.split('/')))
-        #     src_path = path.join(self.local_directory, src_path)
-        #     if len(path_parts) == 1:
-        #         folder_node_id = self.remote_folder_node['id']
-        #     else:
-        #         folder_node = nodes.get_node_by_location(
-        #             '/'.join(path_parts[0:-1]))
-        #         if folder_node:
-        #             folder_node_id = folder_node['id']
-        #         else:
-        #             folder_node_id = nodes.create_location_if_not_exists(
-        #                 '/'.join(path_parts[0:-1]), self.remote_folder_node['id'])
-        #     upload([src_path], folder_node_id)
-        # upload([event.src_path], self.remote_folder_node['id'])
-
-    def normalize_path(self, event:  events.FileSystemEvent):
-        return event.src_path.replace(self.local_directory + '/', '').replace(self.local_directory, '')
 
 
 def watch_local(local_directory, remote_folder_node, fn):

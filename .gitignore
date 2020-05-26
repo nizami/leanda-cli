@@ -4,3 +4,4 @@ venv
 *.egg-info
 sync_temp
 login.sh
+debug.log

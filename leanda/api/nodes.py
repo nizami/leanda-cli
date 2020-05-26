@@ -1,12 +1,15 @@
 import json
+import logging
 import uuid
 
+from urllib.parse import unquote
+
+from leanda import util
+from leanda.api import http
 from leanda.config import config
 from leanda.session import session
-from leanda.api import http
-from leanda import util
-from urllib.parse import unquote
-from leanda.util import print_red, print_yellow
+
+logger = logging.getLogger('nodes')
 
 
 def get_node_by_id(node_id):
@@ -15,7 +18,7 @@ def get_node_by_id(node_id):
     if res.status_code == 200:
         return res.json()
     else:
-        util.print_red('Node with ID {%s} not found' % node_id)
+        logger.error('Node with ID {%s} not found' % node_id)
 
 
 def get_node_breadcrumbs(node_id):
@@ -24,7 +27,7 @@ def get_node_breadcrumbs(node_id):
     if res.status_code == 200:
         return json.loads(res.headers['X-Breadcrumbs'])
     else:
-        util.print_red('Node with ID {%s} not found' % node_id)
+        logger.error('Node with ID {%s} not found' % node_id)
 
 
 def get_nodes_by_id_or_name(node_id_or_name, remote_folder_id=session.cwd):
@@ -45,7 +48,7 @@ def get_nodes(remote_folder_id=session.cwd):
     url = f'{config.web_core_api_url}/nodes/{remote_folder_id}/nodes?pageSize=100&pageNumber=1'
     res = http.get(url)
     if res.status_code != 200:
-        util.print_red("Couldn't get nodes")
+        logger.error("Couldn't get nodes")
         return
     pages = json.loads(res.headers['X-Pagination'])
     yield from res.json()
@@ -86,14 +89,14 @@ def get_first_file_by_name(name, remote_folder_id=None):
 
 def rename(node_id, new_name):
     if not new_name:
-        util.print_red('New name required when rename')
+        logger.error('New name required when rename')
         return
 
     node = get_node_by_id(node_id)
     if not node:
         return
     if 'version' not in node:
-        util.print_red('Node has not version')
+        logger.error('Node has not version')
         return
 
     url = f'{config.web_core_api_url}/entities/folders/{node_id}?version={node["version"]}'
@@ -116,10 +119,10 @@ def remove(node_name_or_id, remote_folder_id=session.cwd):
         url = f'{config.web_core_api_url}/nodecollections'
         res = http.patch(url, data=data)
         if res.status_code == 202:
-            util.print_green('Node "%s" {%s} was removed!' % (
+            logger.info('Node "%s" {%s} was removed!' % (
                 node['name'], node['id']))
         else:
-            util.print_red('Couldn\'t remove node {%s}' % node['id'])
+            logger.error('Couldn\'t remove node {%s}' % node['id'])
 
 
 def create_folder(name, remote_folder_id=None):
@@ -129,10 +132,10 @@ def create_folder(name, remote_folder_id=None):
 
     if res.status_code == 202:
         id = res.headers["Location"][-36:]
-        util.print_green(f'Folder "{name}" {{{id}}} successfully created')
+        logger.info(f'Folder "{name}" {{{id}}} successfully created')
         return id
     else:
-        util.print_red('Cannot create remote folder')
+        logger.error('Cannot create remote folder')
 
 
 def create_location_if_not_exists(location, remote_folder_id=session.cwd):
@@ -160,7 +163,7 @@ def set_cwd(location):
     print(get_location(folder_node))
 
     session.cwd = folder_node['id']
-    # util.print_green('Current remote directory now is "%s" {%s}' % (
+    # logger.info('Current remote directory now is "%s" {%s}' % (
     #     folder_node.get('name', '/'), folder_node['id']))
     return folder_node
 
@@ -209,7 +212,7 @@ def get_node_by_location(location: str, prev_node=None):
     if len(location_parts) > 1:
         node = get_node_by_location(location_parts[0], prev_node)
         if not node:
-            util.print_red('Node not found "%s"' % location)
+            logger.error('Node not found "%s"' % location)
             return
         return get_node_by_location('/'.join(location_parts[1:]), node)
     else:
@@ -222,7 +225,7 @@ def get_node_by_location(location: str, prev_node=None):
         print('node_id', node_id)
 
         if not node:
-            util.print_red('Node not found "%s"')
+            logger.error('Node not found "%s"')
             return
         return node
 
@@ -230,9 +233,9 @@ def get_node_by_location(location: str, prev_node=None):
     nodes = list(filter(lambda x: x['name'] == location, nodes))
 
     if not nodes:
-        print_red('Couldn\'t find remote location "%s"' % location)
+        logger.error('Couldn\'t find remote location "%s"' % location)
         return
 
     if len(nodes) > 1:
-        print_yellow('Found more than one node with name "%s"' % location)
+        logger.warning('Found more than one node with name "%s"' % location)
     return nodes[0]

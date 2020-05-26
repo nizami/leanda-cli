@@ -1,10 +1,17 @@
-import json
-import os
 import humanfriendly
+import json
+import logging
+import os
+import sys
 
-from os import path
 from dotenv import load_dotenv
+from os import path
 from pathlib import Path
+
+from leanda import logger
+
+logger.initialize()
+logger = logging.getLogger('config')
 
 env_path = Path('.') / 'environments/dev.env'
 load_dotenv(dotenv_path=env_path)
@@ -24,3 +31,4 @@ class Config:
 
 
 config = Config()
+logger.debug(config)

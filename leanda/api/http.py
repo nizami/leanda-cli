@@ -1,25 +1,28 @@
-from requests.exceptions import ChunkedEncodingError
+import click
 import json
+import logging
+import magic
+import mimetypes
 import requests
+import sys
+
+from colorama import Fore
 from os import path, stat
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
-import click
+from requests.exceptions import ChunkedEncodingError
 from tqdm import tqdm
-import mimetypes
-from colorama import Fore
-import sys
-import magic
 
-from leanda.session import session
 from leanda.config import config
-from leanda.util import print_green, print_red, truncate_string_middle
+from leanda.session import session
+from leanda.util import truncate_string_middle
 from pprint import pprint
+
+logger = logging.getLogger('blobs')
 
 
 def exit_by_unauthorized_reason(res):
     if res.status_code == 401:
-        print_red('Please login and retry!')
-        sys.exit()
+        logger.error('Please login and retry!')
 
 
 def fetch(method, url, data=None, headers=None):
@@ -37,12 +40,10 @@ def fetch(method, url, data=None, headers=None):
         res = getattr(requests, method)(
             url=url, headers=base_headers, data=data)
         if res.status_code == 401:
-            print_red('Please login and retry!')
-            sys.exit()
+            login_and_retry()
         return res
     except ChunkedEncodingError as error:
-        print_red('Please login and retry!')
-        sys.exit()
+        login_and_retry()
 
 
 def get(url): return fetch('get', url)
@@ -83,8 +84,7 @@ def upload_large_file(url, file_path, data, chunk_callback=None):
     }
     with requests.post(url, data=monitor, headers=headers, stream=True) as res:
         if res.status_code == 401:
-            print_red('Please login and retry!')
-            sys.exit()
+            login_and_retry()
         return res
 
 
@@ -107,8 +107,7 @@ def upload_small_file(url, file_path, data):
     }
     res = requests.post(url, headers=headers, data=encoded_data)
     if res.status_code == 401:
-        print_red('Please login and retry!')
-        sys.exit()
+        login_and_retry()
     return res
 
 
@@ -125,8 +124,7 @@ def download_large_file(url, file_path, chunk_callback=None):
                     if chunk_callback:
                         chunk_callback(len(chunk))
         if res.status_code == 401:
-            print_red('Please login and retry!')
-            sys.exit()
+            login_and_retry()
         return res
 
 
@@ -137,10 +135,14 @@ def download_small_file(url, file_path):
     }
     res = requests.get(url, headers=headers)
     if res.status_code == 401:
-        print_red('Please login and retry!')
-        sys.exit()
+        login_and_retry()
 
     with open(file_path, 'wb') as f:
         f.write(res.content)
 
     return res
+
+
+def login_and_retry():
+    logger.error('Please login and retry!')
+    sys.exit()

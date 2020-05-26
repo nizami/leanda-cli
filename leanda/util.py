@@ -1,21 +1,8 @@
-
 import click
 import uuid
+
 from os import path
 from glob import glob
-
-
-def print_green(text):
-    click.echo(click.style(text, fg='green'))
-
-
-def print_red(text):
-    click.echo(click.style(text, fg='red'))
-
-
-def print_yellow(text):
-    click.echo(click.style(text, fg='yellow'))
-
 
 def truncate_string_middle(s, n):
     if len(s) <= n:
