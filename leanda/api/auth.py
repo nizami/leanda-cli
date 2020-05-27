@@ -28,9 +28,7 @@ def login(username, password):
     }
     res = requests.get(me_url, headers=headers)
     owner = res.json()['id']
-    info = {'token': token}
-    if not session.token:
-        info.update({'cwd': owner, 'owner': owner})
+    info = {'token': token, 'cwd': owner, 'owner': owner, 'user': res.json()}
     session.update(info)
     logger.info('Logged in as {firstName} {lastName}'.format(**res.json()))
     return res.json()

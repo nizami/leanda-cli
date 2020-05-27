@@ -3,6 +3,8 @@ import uuid
 
 from os import path
 from glob import glob
+import json
+
 
 def truncate_string_middle(s, n):
     if len(s) <= n:
@@ -47,3 +49,9 @@ def get_normalized_paths(local_paths):
         local_files = filter(lambda x: path.isfile(x), local_files)
         files.extend(local_files)
     return (directories, list(set(files)))
+
+
+def pretty_json(obj):
+    if isinstance(obj, str):
+        obj = json.loads(obj)
+    return json.dumps(obj, indent=4, sort_keys=True)

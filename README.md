@@ -10,37 +10,31 @@ Install leanda-cli via pip:
 pip install leanda
 ```
 
-Run help command:
+Run help command for installation test:
 
 ```bash
 leanda --help
 ```
 
-For the next commands you need to set the next environment variables or will set for dev env if ommited:
+For the next commands you need to set the next environment variables or it will set as default dev env if ommited:
 
 `LEANDA_WEB_CORE_API_URL`
 
 `LEANDA_WEB_BLOB_API_URL`
 
+`LEANDA_WEB_SOCKET_URL`
+
 `LEANDA_IDENTITY_SERVER_URL`
+
+`LEANDA_FILE_UPLOAD_LIMIT`
+
+`LEANDA_FILE_DOWNLOAD_LIMIT`
 
 Login to Leanda:
 
 ```bash
 leanda login -u my_name -p my_password
 
-```
-
-Get categories list:
-
-```bash
-leanda categories
-```
-
-Run livesync command:
-
-```bash
-leanda livesync -l ./leanda-sync-folder
 ```
 
 `./leanda-sync-folder` is a local folder path.
@@ -56,7 +50,7 @@ leanda livesync -l ./leanda-sync-folder
 | `leanda` [`cd`](#cd)                 | Change Leanda's current working directory.                                   |
 | `leanda` [`ls`](#ls)                 | Browse remote Leanda folder.                                                 |
 | `leanda` [`rm`](#rm)                 | Allows to remove file or folder.                                             |
-| `leanda` [`upload`](#upload)         | Allows uploading a local file into the BLOB (raw file) store.                |
+| `leanda` [`upload`](#upload)         | Upload local direcory or file list to remote folder.                         |
 | `leanda` [`download`](#download)     | Allows to download an Leanda file.                                           |
 | `leanda` [`livesync`](#livesync)     | Two-way synchronization of local folder with the Leanda user's folder.       |
 | `leanda` [`items`](#items)           | Allows to list all items from Leanda using queries.                          |
@@ -75,36 +69,22 @@ Allows to login and reset session information for an Leanda user.
 ```bash
 -u, --username   your leanda username.
 -p, --password   your leanda password
--v, --verbosity  set verbosity level.
 ```
 
 Examples:
 
 ```bash
 leanda login -u<user-name> -p<password>
-leanda login --verbosity -u<user-name> -p<password>
-leanda login -v -u<user-name> -p<password>
-leanda login -vv -u<user-name> -p<password>
-leanda login -u<user-name> -p
-Password:
 ```
 
 ## whoami
 
-Check authorization and explore session data.
-
-### Parameters for `whoami`
-
-```bash
--v, --verbosity  set verbosity level.
-```
+Check authorization and explore user data.
 
 Examples:
 
 ```bash
-leanda whoami --verbosity
-leanda whoami -vv
-leanda whoami -vvv
+leanda whoami
 ```
 
 ## logout
@@ -198,203 +178,42 @@ leanda cd c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 
 Allows to remove file or folder
 
-### Parameters for `rm`
-
-```bash
-container - Remote Leanda user's folder. Leanda user's folder can be choosed by
-            its full id  system wide or by substring for subfolders in current
-            folder. Substring compared to folder name starting from the beggining
-            or to folder id ending.
-```
-
 Examples:
 
 ```bash
-leanda rm a481
-leanda rm abc
 leanda rm c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
 ```
 
 ## upload
 
-Allows uploading a local file into the BLOB (raw file) store.
-
-### Parameters for `upload`
-
-```bash
-container - Remote Leanda user's folder, none for working folder.
-            Leanda user's folder can be choosed by its full id system wide
-            or by substring for subfolders in current folder.
-            Substring compared to folder name starting from the beggining
-            or to folder id ending.
--p, --path - path to local file
--n, --name - name for file
--m, --meta - path to model description in json or yaml formats
--v, --verbosity  set verbosity level.
-```
+Upload local direcory or file list to remote folder.
 
 Examples:
 
 ```bash
-leanda upload -p path-to-file
-leanda upload -p path-to-file1 -p path-to-file2 -p path-to-file3
-leanda upload -p path-to-file -n new-name to file 'filename'
-leanda upload -p path-to-file -m path-to-model.json
-leanda upload -p path-to-file -m path-to-model.yaml
+leanda upload -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -l local_folder
+leanda upload -l local_folder
 ```
 
 ## download
 
-Allows downloading a remote file to local host.
-
-### Parameters for `download`
-
-```bash
-container - Remote Leanda user's folder, none for working folder.
-            Leanda user's folder can be choosed by its full id system wide
-            or by substring for subfolders in current folder.
-            Substring compared to folder name starting from the beggining
-            or to folder id ending.
--o, --output - Path to file or directory to save.
--f, --force - Force overwrite if file exists.
-```
+Download remote folder or file list to local directory.
 
 Examples:
 
 ```bash
-leanda upload abc -o path-to-file
-leanda upload a481 -f -o path-to-file1
-leanda upload c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -o path-to-file
+leanda download -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01 -l local_folder
+leanda download -l local_folder
 ```
 
 ## livesync
 
-Two-way synchronization of local folder with the Leanda user's folder. Comparision between folders based on file names. For more precise comparision see -ul and -ur keys.
-
-```bash
- -l, --local-folder - Path to local folder or none for current working directory
- -r, --remote-folder - Remote Leanda user's folder or none for current working folder.
-                       Leanda user's folder can be choosed by its full id system wide
-                       or by substring for subfolders in current folder. Substring
-                       compared to folder name starting from the begining or to
-                       folder id ending.
- -ul, --update-local - Compare by name and Leanda file's version
- -ur, --update-remote - Compare by name and last modification time.
-
-```
+Sync local direcory with remote folder.
 
 Examples:
 
 ```bash
 leanda livesync -l abc -r c1cc0000-5d8b-0015-e9e3-08d56a8a2e01
-leanda livesync -l /path/to/folder -f -r 2e01 -ul
-leanda livesync -ur
-```
-
-## items
-
-Allows to list all items from Leanda using queries.
-
-```bash
-  -q, --query - Filter models by subquery
-  -n, --name  - Filter models by substring
-  -s, --short-notation
-              - Path to yaml file with list of short notations
-                Example - p.radius:MachineLearningModelInfo.Fingerprints.Radius
-  -v,--verbosity = 0
-              - Set verbosity level.
-                -v - display query string,
-                -vv - display records,
-   -f, --format = (json|yaml)
-              - Set model verbosity output format
-```
-
-Examples:
-
-```bash
-leanda items
-leanda items -v
-leanda items -vv
-leanda items -n png
-leanda items -q "SubType eq 'Model' and MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda items -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda items -q "SubType eq 'Model' and MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
-```
-
-## models
-
-Allows to list models from Leanda using queries. Same as `items`, but add preset filter `SubType eq 'Model'`
-
-Examples:
-
-```bash
-leanda models
-leanda models -v
-leanda models -vv
-leanda items -n ada
-leanda models -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda models -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda models -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
-
-```
-
-## recordsets
-
-Allows to list recordsets from Leanda using queries. Same as `items`, but add preset filter `SubType eq 'Records'`
-
-Examples:
-
-```bash
-leanda recordsets
-leanda recordsets -v
-leanda recordsets -vv
-leanda recordsets -n combined
-leanda recordsets -q "MachineLearningModelInfo.Method eq 'Naive Bayes'"  -vv -f json
-leanda recordsets -q "type=Model,prop.chem=MOST_ABUNDANT_MASS,prop.fields=logs"  -s sample_files/short_notations.yaml
-leanda recordsets -q "MachineLearningModelInfo.Fingerprints.Size gt 200"  -vv -f yaml
-
-```
-
-## train
-
-Allows to run Machine Learning command train.
-
-```bash
-  container - Remote Leanda user's folder, none for working folder.
-              Leanda user's folder can be choosed by its full id system wide
-              or by substring for subfolders in current folder.
-              Substring compared to folder name starting from the beggining
-              or to folder id ending.
-  -m, --meta - Model metadata in json or yaml formats
-  -f, --folder-name - Output folder name
-
-```
-
-Examples:
-
-```bash
-leanda train 00130000-ac12-0242-0f11-08d58dbc7b8b  -f test1.model -m sample_files/train_sdf_model.yaml
-leanda train 08d58dbc7b8b  -f test2.model -m sample_files/train_sdf_model.yaml
-leanda train b data_solubility.sdf -f test3.model -m sample_files/train_sdf_model.yaml
-leanda train data_solubility.sdf -f test4.model -m sample_files/train_sdf_model.yaml
-leanda train data_solu -f test5.model -m sample_files/train_sdf_model.yaml
-```
-
-## predict
-
-Allows to run Machine Learning command predict.
-
-```bash
- -f - --folder-name - Output folder name
- -m - --model - Leanda model's file id.
- -r - --recordset - Leanda recordsets's file id.
-```
-
-Examples:
-
-```bash
-leanda predict -f folder.predict -m 7ceef61a-cf7d-41d9-a1f0-19874a2b31e9 -r 000e0000-ac12-0242-36bb-08d585329c5a
-
 ```
 
 ## categories
@@ -439,8 +258,14 @@ virtualenv venv
 venv\scripts\activate
 ```
 
-### Install package
+### Install as package
 
 ```bash
 pip install --editable .
+```
+
+### Use as terminal tool
+
+```bash
+leanda --help
 ```

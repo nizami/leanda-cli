@@ -10,11 +10,12 @@ class Session():
     token: str
     owner: str
     cwd: str
+    user: {}
 
     def __getattribute__(self, name):
         if name in dir(Session):
             return super().__getattribute__(name)
-        return self.load()[name]
+        return self.load().get(name, None)
 
     def __setattr__(self, name, value):
         self.update({name: value})
