@@ -258,6 +258,12 @@ virtualenv venv
 venv\scripts\activate
 ```
 
+### Install packages
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Install as package
 
 ```bash
