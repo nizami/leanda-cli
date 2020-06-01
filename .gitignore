@@ -5,3 +5,5 @@ venv
 sync_temp
 login.sh
 debug.log
+dist
+build
