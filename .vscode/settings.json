@@ -1,5 +1,23 @@
 {
-  "python.pythonPath": "venv/bin/python",
+  "python.pythonPath": "/usr/local/bin/python3",
   "files.autoSave": "afterDelay",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  // to focus on specific files
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/venv": true,
+    "**/.DS_Store": true,
+    "**/*.egg-info": true,
+    "**/sync_temp": true,
+    "**/login.sh": true,
+    "**/debug.log": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.gitignore": true,
+    "**/requirements.txt": true,
+    "**/setup.py": true,
+    "**/__init__.py": true,
+    "**/environments": true,
+    "**/README.md": true
+  }
 }
