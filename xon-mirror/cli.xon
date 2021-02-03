@@ -15,12 +15,10 @@
 
 logger = Logger()
 
-api = {
-    auth = AuthApi()
-    nodes = NodesApi()
-    blobs = BlobsApi()
-    categoryTrees = CategoryTreeApi()
-}
+authApi = AuthApi()
+nodeApi = NodesApi()
+blobApi = BlobsApi()
+categoryTreeApi = CategoryTreeApi()
 
 CLI:
 
@@ -32,7 +30,7 @@ CLI:
     #CommandOption('-u', '--username'){help='Username.',required=true, prompt=true}
     #CommandOption('-p', '--password'){help='Password.', required=true, prompt=true){hideInput=true}
     login(username String, password String):
-        api.auth.login(username, password)
+        authApi.login(username, password)
 
 
     // Do logout. Session data is removed.
@@ -43,40 +41,40 @@ CLI:
 
     // Identify current Leanda working directory.
     pwd():
-        logger.info(api.nodes.getLocation())
+        logger.info(nodeApi.getLocation())
 
 
     // Change Leanda's current working directory.
     cd(remoteNodeId GUID):
-        api.nodes.setCwd(remoteNodeId)
+        nodeApi.setCwd(remoteNodeId)
 
 
     // Browse remote Leanda folder.
-    #CommandOption('-s', '--show-id'){help='Show id of nodes.', isFlag=true, default=false}
+    #CommandOption('-s', '--show-id'){help='Show id of nodeApi.', isFlag=true, default=false}
     ls(showId Boolean):
-        api.nodes.printCwdNodes(showId)
+        nodeApi.printCwdNodes(showId)
 
 
     // Allows to remove file or folder.
     rm(remoteNodes Array<GUID>):
         loop nodeNameOrId in remoteNodes:
-            api.nodes.remove(nodeNameOrId)
+            nodeApi.remove(nodeNameOrId)
 
 
     // Upload local direcory or file list to remote folder.
     #CommandOption('-r', '--remote'){help='Remote folder id. Root if ommited.', default=None}
     #CommandOption('-l', '--local'){help='Local directories and files (glob pattern) list. Current directory if ommited.', multiple=true, default=None}
     upload(remoteDirId GUID, localDirPath String):
-        api.blobs.upload(remoteDirId, localDirPath)
+        blobApi.upload(remoteDirId, localDirPath)
 
 
     // Download remote folder or file list to local directory.
     #CommandOption('-r', '--remote'){help='Remote folder id. Root if ommited.', default=None}
     #CommandOption('-l', '--local'){help='Local directory. Current directory if ommited.', default=None}
     download(remoteDirId GUID, localDirPath String):
-        remoteNode = api.nodes.getNodeById(remoteDirId || session.cwd)
+        remoteNode = nodeApi.getNodeById(remoteDirId || session.cwd)
         localPath = localDirPath || os.getcwd()
-        blobs.download_folder(remoteNode, localPath)
+        blobApi.download_folder(remoteNode, localPath)
 
 
     // Sync local direcory with remote folder.
@@ -84,14 +82,14 @@ CLI:
     #CommandOption('-r', '--remote'){help='Remote folder id. Root if ommited.', default=None}
     #CommandOption('-l', '--local'){help='Local directory path. Current directory if ommited.', default=None}
     livesync(watch Boolean, remoteDirId GUID, localDirPath String):
-        remoteNode = api.nodes.getNodeById(remoteDirId or session.cwd) 
-            || nodes.getNodeById(session.owner)
+        remoteNode = nodeApi.getNodeById(remoteDirId or session.cwd) 
+            || nodeApi.getNodeById(session.owner)
         localPath = localDirPath || os.getcwd() | Path |x: x.abs()
         logger.info('Local folder is ' + localPath)
-        logger.info('Remote folder is ' + api.nodes.getLocation(remoteNode))
-        api.blobs.sync(localPath, remoteNode)
+        logger.info('Remote folder is ' + nodeApi.getLocation(remoteNode))
+        blobApi.sync(localPath, remoteNode)
 
 
     // List categories
     categories():
-        logger.info(api.categoryTrees.getCategories() | JSON)
+        logger.info(categoryTreeApi.getCategories() | JSON)
