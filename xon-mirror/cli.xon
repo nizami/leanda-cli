@@ -13,8 +13,10 @@
 
 // logger = logging.getLogger('cli')
 
-logger = Logger()
+xon/os: Path
 
+
+logger = Logger()
 authApi = AuthApi()
 nodeApi = NodesApi()
 blobApi = BlobsApi()
@@ -22,8 +24,9 @@ categoryTreeApi = CategoryTreeApi()
 
 CLI:
 
+    // Get session info
     whoami():
-        console.write(session | JSON)
+        logger.info(session | JSON)
 
 
     // Allows to login and store the login info for a Leanda user.
