@@ -17,7 +17,6 @@
     "**/requirements.txt": true,
     "**/setup.py": true,
     "**/__init__.py": true,
-    "**/environments": true,
     "**/README.md": true
   }
 }
