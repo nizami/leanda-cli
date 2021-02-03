@@ -1,0 +1,15 @@
+xon/os: Environment, Path
+scope/human: Size
+
+envFilePath = 'environments/dev.env' | Path
+env = Environment(envFilePath)
+
+Config:
+    webCoreApiUrl = env.get('LEANDA_WEB_CORE_API_URL')
+    webBlobApiUrl = env.get('LEANDA_WEB_BLOB_API_URL')
+    webSocketUrl = env.get('LEANDA_WEB_SOCKET_URL')
+    identityServerUrl = env.get('LEANDA_IDENTITY_SERVER_URL')
+    fileUploadLimit = env.get('LEANDA_FILE_UPLOAD_LIMIT')
+    fileDownloadLimit = env.get('LEANDA_FILE_DOWNLOAD_LIMIT')
+    fileDownloadLimitInt = env.get('LEANDA_FILE_DOWNLOAD_LIMIT') || '50MB' | Size | Number
+    fileUploadLimitInt = env.get('LEANDA_FILE_UPLOAD_LIMIT') || '50MB' | Size | Number
