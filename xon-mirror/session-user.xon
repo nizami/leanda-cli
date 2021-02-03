@@ -1,0 +1,11 @@
+SessionUser:
+
+    #JsonProperty('grant_type')
+    grantType
+
+    #JsonProperty('client_id')
+    clientId
+
+    username
+    
+    password

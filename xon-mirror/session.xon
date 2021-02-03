@@ -6,16 +6,23 @@
 
 sessionFilePath = '{}/.leanda.json'.format(path.expanduser('~'))
 Session:
-    token String
-    owner String
-    cwd String
-    user User
 
-    def save(self, session):
+    token String
+
+    owner String
+
+    cwd String
+
+    user SessionUser
+
+    clear():
+        // pass
+
+    save(session):
         // with open(self.path, 'w') as f:
         //     json.dump(session, f, indent=4)
 
-    def update(self, session_params):
+    update(session_params):
         // if path.exists(self.path):
         //     session = self.load()
         // else:
@@ -23,7 +30,7 @@ Session:
         // session.update(session_params)
         // self.save(session)
 
-    def load(self):
+    load():
         // if path.exists(self.path):
         //     with open(self.path, 'r') as f:
         //         return json.load(f)
